@@ -1,7 +1,6 @@
-package app;
+package app.drawing;
 
 import model.creatures.CreatureType;
-
 import java.util.HashMap;
 import java.util.Map;
 

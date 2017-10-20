@@ -1,4 +1,4 @@
-package app;
+package app.drawing;
 
 public enum TextureType {
     SimpleSnakeBodyPart,

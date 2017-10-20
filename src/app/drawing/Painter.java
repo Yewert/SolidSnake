@@ -1,31 +1,32 @@
-package app;
+package app.drawing;
 
+import app.Settings;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.game.GameFrame;
 import model.utils.Point;
 
-class Painter {
+public class Painter {
     private static int size = Settings.getSize();
-    private static GameFrame _prevFrame = null;
+    private static GameFrame prevFrame = null;
 
-    static void paint(GameFrame frame, GraphicsContext gc){
+    public static void paint(GameFrame frame, GraphicsContext gc){
         gc.setFill(Color.DARKGRAY);
         gc.fillRect(0,0, Settings.getWidth(), Settings.getHeight());
 
         if (frame != null) {
             paintFrame(frame, gc);
             paintScore(frame, gc);
-            _prevFrame = frame;
+            prevFrame = frame;
             //TODO: draw dead Snake
         }else {
 
-            if (_prevFrame == null) {
+            if (prevFrame == null) {
                 throw new IllegalArgumentException("Previous frame was null");
             }
 
-            paintFrame(_prevFrame, gc);
-            paintScore(_prevFrame, gc);
+            paintFrame(prevFrame, gc);
+            paintScore(prevFrame, gc);
             paintResetMessage(gc);
         }
     }

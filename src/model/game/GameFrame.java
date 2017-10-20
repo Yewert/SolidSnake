@@ -1,8 +1,8 @@
 package model.game;
 
 //TODO: move creature -> texture conversion to another place
-import app.CreatureToTextureConverter;
-import app.TextureType;
+import app.drawing.CreatureToTextureConverter;
+import app.drawing.TextureType;
 import model.creatures.Creature;
 import model.creatures.CreatureType;
 import model.utils.Direction;

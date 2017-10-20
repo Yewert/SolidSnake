@@ -1,5 +1,6 @@
-package app;
+package app.menus.mainMenu;
 
+import app.menus.menu.MenuButton;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -10,9 +11,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-class MainMenuButton extends MenuButton {
+public class MainMenuButton extends MenuButton {
 
-    MainMenuButton(String name){
+    public MainMenuButton(String name){
         LinearGradient gradient = new LinearGradient(
                 0, 0,
                 1, 0,
