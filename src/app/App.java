@@ -1,5 +1,6 @@
 package app;
 
+
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -18,9 +19,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import app.menus.menu.Menu;
+import app.menus.menu.MenuButton;
 import app.menus.mainMenu.MainMenu;
 import app.menus.pauseMenu.PauseMenu;
-import app.menus.menu.MenuButton;
 import app.drawing.Painter;
 import model.utils.Direction;
 import model.game.Game;
@@ -71,7 +73,7 @@ public class App extends Application {
         StackPane root = new StackPane();
         root.setPrefSize(width, height);
 
-        PauseMenu pauseMenu = new PauseMenu();
+        Menu pauseMenu = new PauseMenu();
         Map<String, MenuButton> bm = pauseMenu.getButtonsMap();
         bm.get("pauseResume").setOnMouseClicked(event -> {
             isPaused = false;
@@ -184,7 +186,7 @@ public class App extends Application {
         root.getChildren().add(snakeLogo);
         StackPane.setAlignment(snakeLogo, Pos.TOP_CENTER);
 
-        MainMenu mainMenu = new MainMenu();
+        Menu mainMenu = new MainMenu();
         Map<String, MenuButton> mb = mainMenu.getButtonsMap();
         mb.get("playSolo").setOnMouseClicked(event -> {
             FadeTransition fade = new FadeTransition(Duration.millis(300), root);

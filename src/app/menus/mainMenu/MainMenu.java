@@ -126,6 +126,7 @@ public class MainMenu extends Menu {
         getChildren().add(menuWithInfo);
     }
 
+    @Override
     public Map<String, MenuButton> getButtonsMap(){
         return buttons;
     }

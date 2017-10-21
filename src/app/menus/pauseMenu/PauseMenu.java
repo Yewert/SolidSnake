@@ -80,6 +80,7 @@ public class PauseMenu extends Menu {
         getChildren().addAll(bg, menuPause);
     }
 
+    @Override
     public Map<String, MenuButton> getButtonsMap(){
         return buttons;
     }
