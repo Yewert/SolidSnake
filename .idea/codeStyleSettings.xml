@@ -5,6 +5,7 @@
       <value>
         <option name="FIELD_NAME_PREFIX" value="_" />
         <option name="PREFER_LONGER_NAMES" value="false" />
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
         <option name="RIGHT_MARGIN" value="100" />
         <codeStyleSettings language="JAVA">
           <option name="FOR_STATEMENT_RPAREN_ON_NEXT_LINE" value="true" />

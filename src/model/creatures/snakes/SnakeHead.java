@@ -49,6 +49,9 @@ public class SnakeHead implements SnakeBodyPart {
         }
         else if (otherCreature instanceof  TailDiscardBodyPart){
         }
+        else if (otherCreature instanceof SnakeHead) {
+            skeleton.setIsDead();
+        }
         else if (otherCreature instanceof Wall){
             skeleton.setIsDead();
         }
