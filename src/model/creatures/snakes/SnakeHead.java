@@ -84,6 +84,7 @@ public class SnakeHead implements SnakeBodyPart {
             skeleton.setIsDead();
         }
         else if (type ==  TailDiscardBodyPart){
+            newBodyParts.clear();
         }
         else if (type == SnakeHead) {
             skeleton.setIsDead();
