@@ -1,6 +1,5 @@
 package swing;
 
-import app.drawing.TextureType;
 import model.game.Game;
 import model.game.GameFrame;
 import model.utils.Direction;
@@ -22,7 +21,6 @@ public class App extends JFrame
     private GameFrame frame;
     private GameFrame prevFrame = null;
     private boolean isRunning = true;
-    private int fps = 60;
     private int windowWidth = 800;
     private int windowHeight = 600;
     private int size = 20;
@@ -141,8 +139,8 @@ public class App extends JFrame
     }
 
     private void paintFrame(GameFrame frame, Graphics bbg){
-        frame.getTexturesInfo().forEach((p, ti) -> {
-            bbg.setColor(colorDict.get(ti.getType()));
+        frame.getCreaturesInfo().forEach((p, ci) -> {
+            bbg.setColor(colorDict.get(CreatureToTextureConverter.converters.get(ci.getType())));
             paintPoint(p, bbg);
         });
     }
@@ -159,7 +157,7 @@ public class App extends JFrame
     private void paintScore(GameFrame frame, Graphics bbg){
         bbg.setColor(Color.WHITE);
         for (int i = 0; i < frame.getScores().length; i++) {
-            bbg.drawString("Player " + i + 1 +": " + frame.getScores()[i], 10, 10 + i*20);
+            bbg.drawString("Player " + i +": " + frame.getScores()[i], 10, 10 + i*20);
         }
     }
 
