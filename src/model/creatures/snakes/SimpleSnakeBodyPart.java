@@ -3,6 +3,7 @@ package model.creatures.snakes;
 
 import model.creatures.CreatureType;
 import model.creatures.Creature;
+import model.creatures.CreatureTypeValidator;
 import model.utils.Direction;
 import model.utils.Point;
 
@@ -41,7 +42,7 @@ public class SimpleSnakeBodyPart implements SnakeBodyPart {
     @Override
     public void interactWith(Creature otherCreature) {
         CreatureType type = otherCreature.getCreatureType();
-        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
+        if (CreatureTypeValidator.isSnake(type)) {
             skeleton.setIsDead();
         }
         else {

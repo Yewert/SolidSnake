@@ -33,13 +33,13 @@ class TailDiscardBodyPart implements SnakeBodyPart {
     }
 
     @Override
-    public void interactWith(Creature otherCreature) {
+    public void interactWith(Creature otherCreature) throws IllegalArgumentException {
         CreatureType type = otherCreature.getCreatureType();
         if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
             skeleton.setIsDead();
         }
         else {
-            throw new UnsupportedOperationException(String.format("DA FAK MADAFAKA?!" +
+            throw new IllegalArgumentException(String.format("DA FAK MADAFAKA?!" +
                             " I DON'T KNOW HOW TO SPEAK TO WHAMEN!" +
                             "(This (%s) doesn't know hot to interact with (%s))",
                     this.toString(),

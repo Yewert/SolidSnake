@@ -59,7 +59,7 @@ public class SnakeBodyPartSkeleton implements SnakeBodyPart {
     }
 
     @Override
-    public void cleanUp() {
+    public void cleanUp() throws UnsupportedOperationException{
         if(!isDead){
             throw new UnsupportedOperationException("You can't dump the body before killing it!");
         }

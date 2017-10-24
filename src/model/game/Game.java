@@ -27,7 +27,7 @@ public class Game {
     private int mushroomDeathRate = 30;
     private boolean foodSpawnActivated = true;
 
-    public Game(int width, int height, int snakeCount){
+    public Game(int width, int height, int snakeCount) throws IllegalArgumentException{
         field = new Creature[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -43,7 +43,7 @@ public class Game {
                 0, field[0].length - 1, 1, 1);
         for (int i = 0; i < snakeCount; i++) {
             if (snakesLocations[i] == null) {
-                throw new UnsupportedOperationException("The world is too small for both of us!" +
+                throw new IllegalArgumentException("The world is too small for both of us!" +
                         "(Field too small - could not spawn a snake)");
             }
             snakes[i] = new Snake(snakesLocations[i], Direction.None);
@@ -54,7 +54,7 @@ public class Game {
         }
     }
 
-    public Game(GameSettings settings){
+    public Game(GameSettings settings) throws IllegalArgumentException{
         foodSpawnActivated = settings.isFoodSpawnEnabled();
         if (!foodSpawnActivated){
             appleSpawnRate = 0;
@@ -125,19 +125,18 @@ public class Game {
         Map<Point, Creature> survivedCreatures = resolveCollisions(collisions);
         cleanUp();
         makeNewField(survivedCreatures);
-        int[] scores = new int[snakes.length];
         boolean isThereAnySnakeAlive = false;
-        for (int i = 0; i < snakes.length; i++) {
-            scores[i] = snakes[i].getScore();
-            isThereAnySnakeAlive = isThereAnySnakeAlive || !snakes[i].isDead();
+        for (Snake snake : snakes) {
+            isThereAnySnakeAlive = isThereAnySnakeAlive || !snake.isDead();
         }
         if(!isThereAnySnakeAlive) {
             return null;
         }
-        return new GameFrame(field.length, field[0].length, survivedCreatures, scores);
+        return new GameFrame(field.length, field[0].length, survivedCreatures, snakes);
     }
 
-    private void makeNewField(Map<Point, Creature> survivedCreatures) {
+    private void makeNewField(Map<Point, Creature> survivedCreatures)
+            throws IndexOutOfBoundsException{
         field = new Creature[field.length][field[0].length];
         for (Point location : survivedCreatures.keySet()) {
             try {
@@ -183,7 +182,8 @@ public class Game {
         }
     }
 
-    private Map<Point, Creature> resolveCollisions(Map<Point, List<Creature>> collisions){
+    private Map<Point, Creature> resolveCollisions(Map<Point, List<Creature>> collisions)
+            throws IllegalStateException{
         Map<Point, Creature> resolved = new HashMap<>();
         for (Point location: collisions.keySet()) {
             List<Creature> collidingCreatures = dropDead(collisions.get(location));

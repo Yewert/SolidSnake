@@ -20,7 +20,8 @@ public class SnakeHead implements SnakeBodyPart {
         newBodyParts = new LinkedList<>();
     }
 
-    public SnakeHead(Direction direction, Point location, Snake snake, int tailDiscardsPerMushroom){
+    public SnakeHead(Direction direction, Point location, Snake snake, int tailDiscardsPerMushroom)
+            throws IllegalArgumentException{
         skeleton = new SnakeBodyPartSkeleton(true, direction, location, snake);
         newBodyParts = new LinkedList<>();
         if(tailDiscardsPerMushroom < 1){
@@ -84,7 +85,10 @@ public class SnakeHead implements SnakeBodyPart {
             skeleton.setIsDead();
         }
         else if (type ==  TailDiscardBodyPart){
-            newBodyParts.clear();
+            SnakeBodyPart otherBodyPart = (SnakeBodyPart)otherCreature;
+            if (otherBodyPart.getSnake() == getSnake()) {
+                newBodyParts.clear();
+            }
         }
         else if (type == SnakeHead) {
             skeleton.setIsDead();

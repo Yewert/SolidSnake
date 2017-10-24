@@ -31,13 +31,13 @@ public class Mushroom implements Creature {
     }
 
     @Override
-    public void interactWith(Creature otherCreature) {
+    public void interactWith(Creature otherCreature) throws IllegalArgumentException {
         CreatureType type = otherCreature.getCreatureType();
-        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
+        if (CreatureTypeValidator.isSnake(type)) {
             isDead = true;
         }
         else{
-            throw new UnsupportedOperationException("This mushroom doesn't know how to behave in these " +
+            throw new IllegalArgumentException("This mushroom doesn't know how to behave in these " +
                     "circumstances WutFace");
         }
     }

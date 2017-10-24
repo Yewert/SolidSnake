@@ -31,13 +31,13 @@ public class Apple implements Creature {
     }
 
     @Override
-    public void interactWith(Creature otherCreature) {
+    public void interactWith(Creature otherCreature) throws IllegalArgumentException{
         CreatureType type = otherCreature.getCreatureType();
-        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
+        if (CreatureTypeValidator.isSnake(type)) {
             isDead = true;
         }
         else{
-            throw new UnsupportedOperationException("This apple doesn't know how to behave in these " +
+            throw new IllegalArgumentException("This apple doesn't know how to behave in these " +
                     "circumstances WutFace");
         }
     }
