@@ -18,7 +18,6 @@ public class Painter {
             paintFrame(frame, gc);
             paintScore(frame, gc);
             prevFrame = frame;
-            //TODO: draw dead Snake
         }else {
 
             if (prevFrame == null) {
@@ -34,7 +33,6 @@ public class Painter {
     private static void paintFrame(GameFrame frame, GraphicsContext gc){
         frame.getTexturesInfo().forEach((p, ti) -> {
             gc.setFill(Settings.getColorDict().get(ti.getType()));
-            //considering that Point is (col, row), not pixels
             paintPoint(p, gc);
         });
     }
@@ -51,7 +49,8 @@ public class Painter {
     private static void paintScore(GameFrame frame, GraphicsContext gc){
         gc.setFill(Color.BEIGE);
         for (int i = 0; i < frame.getScores().length; i++) {
-            gc.fillText("Player " + i + 1 +": " + frame.getScores()[i], 10, 10 + i*20);
+            int s = i + 1;
+            gc.fillText("Player " + s +": " + frame.getScores()[i], 10, 10 + i*20);
         }
     }
 }

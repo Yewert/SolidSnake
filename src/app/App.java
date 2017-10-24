@@ -38,7 +38,7 @@ public class App extends Application {
     private static GraphicsContext context;
     private static boolean isGameOver;
     private static boolean isPaused = false;
-    private static Direction currDir;
+    private static Direction[] currDir;
     private static int snakeCount = 1;
     private static Stage theStage;
     private static AnimationTimer gameLoop;
@@ -82,7 +82,6 @@ public class App extends Application {
         });
         bm.get("pauseRestart").setOnMouseClicked(event -> {
             isPaused = false;
-//            gameLoop.stop();
             root.getChildren().remove(pauseMenu);
             pauseMenu.reload();
             reset(snakeCount);
@@ -108,16 +107,40 @@ public class App extends Application {
         canvas.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case W:
-                    currDir = Direction.Up;
+                    currDir[0] = Direction.Up;
                     break;
                 case S:
-                    currDir = Direction.Down;
+                    currDir[0] = Direction.Down;
                     break;
                 case A:
-                    currDir = Direction.Left;
+                    currDir[0] = Direction.Left;
                     break;
                 case D:
-                    currDir = Direction.Right;
+                    currDir[0] = Direction.Right;
+                    break;
+                case UP:
+                    currDir[1] = Direction.Up;
+                    break;
+                case DOWN:
+                    currDir[1] = Direction.Down;
+                    break;
+                case LEFT:
+                    currDir[1] = Direction.Left;
+                    break;
+                case RIGHT:
+                    currDir[1] = Direction.Right;
+                    break;
+                case NUMPAD8:
+                    currDir[2] = Direction.Up;
+                    break;
+                case NUMPAD5:
+                    currDir[2] = Direction.Down;
+                    break;
+                case NUMPAD4:
+                    currDir[2] = Direction.Left;
+                    break;
+                case NUMPAD6:
+                    currDir[2] = Direction.Right;
                     break;
                 case ENTER:
                     if (isGameOver) {
@@ -145,7 +168,7 @@ public class App extends Application {
                 if (!isGameOver && !isPaused) {
                     if ((now - prevTime) >= 100 * 1000000) {
                         prevTime = now;
-                        frame = game.makeTurn(new Direction[]{currDir});
+                        frame = game.makeTurn(currDir);
                         if (frame == null) {
                             isGameOver = true;
                         }
@@ -178,7 +201,7 @@ public class App extends Application {
                         true,
                         true)
         );
-        FadeTransition logoFade = new FadeTransition(Duration.millis(2000), snakeLogo);
+        FadeTransition logoFade = new FadeTransition(Duration.millis(1000), snakeLogo);
         logoFade.setFromValue(0);
         logoFade.setToValue(1);
 
@@ -189,14 +212,28 @@ public class App extends Application {
         Menu mainMenu = new MainMenu();
         Map<String, MenuButton> mb = mainMenu.getButtonsMap();
         mb.get("playSolo").setOnMouseClicked(event -> {
-            FadeTransition fade = new FadeTransition(Duration.millis(300), root);
+            FadeTransition fade = new FadeTransition(Duration.millis(200), root);
             fade.setFromValue(1);
             fade.setToValue(0);
             fade.setOnFinished(e -> playSnake(1));
             fade.play();
         });
+        mb.get("playDuo").setOnMouseClicked(event -> {
+            FadeTransition fade = new FadeTransition(Duration.millis(200), root);
+            fade.setFromValue(1);
+            fade.setToValue(0);
+            fade.setOnFinished(e -> playSnake(2));
+            fade.play();
+        });
+        mb.get("playTrio").setOnMouseClicked(event -> {
+            FadeTransition fade = new FadeTransition(Duration.millis(200), root);
+            fade.setFromValue(1);
+            fade.setToValue(0);
+            fade.setOnFinished(e -> playSnake(3));
+            fade.play();
+        });
 
-        FadeTransition startFade = new FadeTransition(Duration.millis(2000), mainMenu);
+        FadeTransition startFade = new FadeTransition(Duration.millis(1000), mainMenu);
         startFade.setFromValue(0);
         startFade.setToValue(1);
         logoFade.setOnFinished(event -> {
@@ -211,8 +248,11 @@ public class App extends Application {
 
     private static void reset(int snakeCount) {
         isGameOver = false;
-        currDir = Direction.None;
+        currDir = new Direction[snakeCount];
+        for (int i = 0; i < currDir.length; i++) {
+            currDir[i] = Direction.None;
+        }
         game = new Game(Settings.getCols(), Settings.getRows(), snakeCount);
-        frame = game.makeTurn(new Direction[]{currDir});
+        frame = game.makeTurn(currDir);
     }
 }

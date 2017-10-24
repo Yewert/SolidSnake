@@ -53,10 +53,12 @@ public class MainMenu extends Menu {
 
         MenuButton playSolo = new MainMenuButton("SOLO");
         MenuButton playDuo = new MainMenuButton("DUO");
+        MenuButton playTrio = new MainMenuButton("TRIO");
         MenuButton playBack = new MainMenuButton("BACK");
         MenuBox menuPlay = new MainMenuBox(
                 playSolo,
                 playDuo,
+                playTrio,
                 playBack
         );
 
@@ -117,7 +119,7 @@ public class MainMenu extends Menu {
         getChildren().add(menuWithInfo);
 
         //TODO: Java9 ONLY!!!!!
-        buttons = Map.of("playSolo", playSolo, "playDuo", playDuo);
+        buttons = Map.of("playSolo", playSolo, "playDuo", playDuo, "playTrio", playTrio);
     }
 
     @Override
