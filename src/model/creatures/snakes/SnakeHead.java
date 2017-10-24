@@ -69,7 +69,7 @@ public class SnakeHead implements SnakeBodyPart {
     }
 
     @Override
-    public void interactWith(Creature otherCreature) {
+    public void interactWith(Creature otherCreature) throws UnsupportedOperationException{
         CreatureType type = otherCreature.getCreatureType();
         if (type == Apple){
             skeleton.getSnake().incrementScore(10);
@@ -85,9 +85,19 @@ public class SnakeHead implements SnakeBodyPart {
             skeleton.setIsDead();
         }
         else if (type ==  TailDiscardBodyPart){
-            SnakeBodyPart otherBodyPart = (SnakeBodyPart)otherCreature;
-            if (otherBodyPart.getSnake() == getSnake()) {
-                newBodyParts.clear();
+            newBodyParts.clear();
+            SnakeBodyPart asBodyPart = (SnakeBodyPart)otherCreature;
+            while (true){
+                if(asBodyPart.getCreatureType() == SimpleSnakeBodyPart){
+                    skeleton.getSnake().incrementScore(40);
+                }
+                else if (asBodyPart.getCreatureType() == TailDiscardBodyPart) {
+                    skeleton.getSnake().incrementScore(30);
+                }
+                asBodyPart = asBodyPart.getNextBodyPart();
+                if (asBodyPart == null){
+                    break;
+                }
             }
         }
         else if (type == SnakeHead) {

@@ -7,7 +7,6 @@ import model.creatures.snakes.Snake;
 import model.creatures.snakes.SnakeBodyPart;
 import model.utils.Direction;
 import model.utils.Point;
-
 import java.util.HashMap;
 import java.util.Map;
 
