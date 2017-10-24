@@ -1,13 +1,15 @@
-package app;
+package app.menus.mainMenu;
 
+import app.menus.menu.MenuBox;
+import app.menus.menu.MenuButton;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
 
-class MainMenuBox extends MenuBox{
-    MainMenuBox(MenuButton... items) {
+public class MainMenuBox extends MenuBox {
+    public MainMenuBox(MenuButton... items) {
         getChildren().add(createSeparator());
 
         for (MenuButton item : items) {

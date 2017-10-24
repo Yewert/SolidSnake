@@ -1,4 +1,4 @@
-package app;
+package swing;
 
 public enum TextureType {
     SimpleSnakeBodyPart,

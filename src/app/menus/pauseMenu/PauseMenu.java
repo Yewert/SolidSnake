@@ -1,5 +1,8 @@
-package app;
+package app.menus.pauseMenu;
 
+import app.menus.menu.Menu;
+import app.menus.menu.MenuBox;
+import app.menus.menu.MenuButton;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -11,22 +14,22 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import java.util.Map;
 
-class PauseMenu extends Menu {
+public class PauseMenu extends Menu {
 
-    private Map<String, MenuButton> _buttons;
-    private Rectangle _bg;
-    private MenuBox _menuPause;
+    private Map<String, MenuButton> buttons;
+    private Rectangle bg;
+    private MenuBox menuPause;
 
-    PauseMenu(){
+    public PauseMenu(){
         //TODO: get width and height from App
-        _bg = new Rectangle(800, 600);
-        _bg.setFill(Color.GREY);
-        _bg.setOpacity(0.4);
+        bg = new Rectangle(800, 600);
+        bg.setFill(Color.GREY);
+        bg.setOpacity(0.4);
 
         MenuButton pauseResume = new PauseMenuButton("RESUME", 22);
         MenuButton pauseRestart = new PauseMenuButton("RESTART", 22);
         MenuButton pauseQuit = new PauseMenuButton("QUIT", 22);
-        _menuPause = new PauseMenuBox(
+        menuPause = new PauseMenuBox(
                 pauseResume,
                 pauseRestart,
                 pauseQuit
@@ -52,31 +55,33 @@ class PauseMenu extends Menu {
         pauseResume.setOnMouseClicked(event -> {});
         pauseRestart.setOnMouseClicked(event -> {});
         pauseQuit.setOnMouseClicked(event -> {
-            getChildren().remove(_menuPause);
+            getChildren().remove(menuPause);
             getChildren().add(menuQuit);
         });
 
         quitYes.setOnMouseClicked(event -> {});
         quitNo.setOnMouseClicked(event -> {
             getChildren().remove(menuQuit);
-            getChildren().add(_menuPause);
+            getChildren().add(menuPause);
         });
 
-        _menuPause.setAlignment(Pos.CENTER);
+        menuPause.setAlignment(Pos.CENTER);
         setAlignment(Pos.CENTER);
 
-        getChildren().addAll(_bg, _menuPause);
+        getChildren().addAll(bg, menuPause);
 
         //TODO: Java9 ONLY!!!!!
-        _buttons = Map.of("pauseResume", pauseResume, "pauseRestart", pauseRestart, "quitYes", quitYes);
+        buttons = Map.of("pauseResume", pauseResume, "pauseRestart", pauseRestart, "quitYes", quitYes);
     }
 
-    void reload() {
+    @Override
+    public void reload() {
         getChildren().clear();
-        getChildren().addAll(_bg, _menuPause);
+        getChildren().addAll(bg, menuPause);
     }
 
-    Map<String, MenuButton> getButtonsMap(){
-        return _buttons;
+    @Override
+    public Map<String, MenuButton> getButtonsMap(){
+        return buttons;
     }
 }

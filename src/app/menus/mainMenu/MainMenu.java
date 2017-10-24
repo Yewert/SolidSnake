@@ -1,26 +1,28 @@
-package app;
+package app.menus.mainMenu;
 
+import app.menus.menu.Menu;
+import app.menus.menu.MenuBox;
+import app.menus.menu.MenuButton;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-
 import java.util.Map;
 
-class MainMenu extends Menu {
+public class MainMenu extends Menu {
 
-    private Map<String, MenuButton> _buttons;
-    private VBox _menuWithInfo;
-    private StackPane _startPane;
-    private MainMenuInfoText _infoText;
+    private Map<String, MenuButton> buttons;
+    private VBox menuWithInfo;
+    private StackPane startPane;
+    private MainMenuInfoText infoText;
 
-    MainMenu(){
-        _menuWithInfo = new VBox();
-        _menuWithInfo.setAlignment(Pos.BOTTOM_CENTER);
+    public MainMenu(){
+        menuWithInfo = new VBox();
+        menuWithInfo.setAlignment(Pos.BOTTOM_CENTER);
 
-        _startPane = new StackPane();
-        _infoText = new MainMenuInfoText("");
+        startPane = new StackPane();
+        infoText = new MainMenuInfoText("");
 
         MenuButton mainPlay = new MainMenuButton("PLAY");
         MenuButton mainOptions = new MainMenuButton("OPTIONS");
@@ -51,57 +53,59 @@ class MainMenu extends Menu {
 
         MenuButton playSolo = new MainMenuButton("SOLO");
         MenuButton playDuo = new MainMenuButton("DUO");
+        MenuButton playTrio = new MainMenuButton("TRIO");
         MenuButton playBack = new MainMenuButton("BACK");
         MenuBox menuPlay = new MainMenuBox(
                 playSolo,
                 playDuo,
+                playTrio,
                 playBack
         );
 
 
         mainPlay.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuMain, menuPlay);
-            _infoText.setText("");
+            infoText.setText("");
         });
         mainOptions.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuMain, menuOptions);
-            _infoText.setText("");
+            infoText.setText("");
         });
         mainExit.setOnMouseClicked(event -> System.exit(0));
 
 
         optionsControls.setOnMouseClicked(event -> {
-            _infoText.setText("Not featured yet");
+            infoText.setText("Not featured yet");
         });
         optionsSkins.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuOptions, menuSkins);
-            _infoText.setText("");
+            infoText.setText("");
         });
         optionsBack.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuOptions, menuMain);
-            _infoText.setText("");
+            infoText.setText("");
         });
 
 
         skinsBlue.setOnMouseClicked(event -> {
-            _infoText.setText("Not featured yet");
+            infoText.setText("Not featured yet");
         });
         skinsRed.setOnMouseClicked(event -> {
-            _infoText.setText("Not featured yet");
+            infoText.setText("Not featured yet");
         });
         skinsBack.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuSkins, menuOptions);
-            _infoText.setText("");
+            infoText.setText("");
         });
 
 
         playSolo.setOnMouseClicked(event -> {});
         playDuo.setOnMouseClicked(event -> {
-            _infoText.setText("Not featured yet");
+            infoText.setText("Not featured yet");
         });
         playBack.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuPlay, menuMain);
-            _infoText.setText("");
+            infoText.setText("");
         });
 
 
@@ -110,22 +114,23 @@ class MainMenu extends Menu {
         initMenu(menuSkins);
         initMenu(menuPlay);
 
-        _startPane.getChildren().add(menuMain);
-        _menuWithInfo.getChildren().addAll(_startPane, _infoText);
-        getChildren().add(_menuWithInfo);
+        startPane.getChildren().add(menuMain);
+        menuWithInfo.getChildren().addAll(startPane, infoText);
+        getChildren().add(menuWithInfo);
 
         //TODO: Java9 ONLY!!!!!
-        _buttons = Map.of("playSolo", playSolo, "playDuo", playDuo);
+        buttons = Map.of("playSolo", playSolo, "playDuo", playDuo, "playTrio", playTrio);
     }
 
     @Override
-    void reload() {
+    public void reload() {
         getChildren().clear();
-        getChildren().add(_menuWithInfo);
+        getChildren().add(menuWithInfo);
     }
 
-    Map<String, MenuButton> getButtonsMap(){
-        return _buttons;
+    @Override
+    public Map<String, MenuButton> getButtonsMap(){
+        return buttons;
     }
 
     private void fadeFromMenuToMenu(MenuBox from, MenuBox to){
@@ -139,9 +144,9 @@ class MainMenu extends Menu {
 
         frFrom.play();
         frFrom.setOnFinished(event -> {
-            _startPane.getChildren().remove(from);
+            startPane.getChildren().remove(from);
             to.setOpacity(0);
-            _startPane.getChildren().add(to);
+            startPane.getChildren().add(to);
             ftTo.play();
         });
     }
