@@ -6,6 +6,5 @@ public enum CreatureType {
     Apple,
     TailDiscardBodyPart,
     Mushroom,
-    Wall,
-    None
+    Wall
 }

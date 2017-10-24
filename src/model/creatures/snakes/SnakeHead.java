@@ -1,19 +1,59 @@
 package model.creatures.snakes;
 
-import model.creatures.*;
+import model.creatures.Creature;
 import model.utils.Direction;
 import model.utils.Point;
+import model.creatures.CreatureType;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import static model.creatures.CreatureType.*;
 
 public class SnakeHead implements SnakeBodyPart {
-    private static final CreatureType CREATURE_TYPE = CreatureType.SnakeHead;
+    private static final CreatureType CREATURE_TYPE = SnakeHead;
     private final SnakeBodyPartSkeleton skeleton;
+    private final Queue<CreatureType> newBodyParts;
+    private int tailDiscardsToAppend = 3;
 
     public SnakeHead(Direction direction, Point location, Snake snake){
         skeleton = new SnakeBodyPartSkeleton(true, direction, location, snake);
+        newBodyParts = new LinkedList<>();
+    }
+
+    public SnakeHead(Direction direction, Point location, Snake snake, int tailDiscardsPerMushroom){
+        skeleton = new SnakeBodyPartSkeleton(true, direction, location, snake);
+        newBodyParts = new LinkedList<>();
+        if(tailDiscardsPerMushroom < 1){
+            //TODO: Insert some memes into exception message
+            throw new IllegalArgumentException("");
+        }
+        tailDiscardsToAppend = tailDiscardsPerMushroom;
     }
 
     @Override
     public void makeMove(Creature[][] field, int currentTurn) {
+        if (newBodyParts.size() > 0){
+            CreatureType toAdd = newBodyParts.remove();
+            SnakeBodyPart tail = getSnake().getTail();
+            if (toAdd == SimpleSnakeBodyPart){
+                skeleton.attachNewBodyPart(new SimpleSnakeBodyPart(
+                        Direction.None,
+                        tail.getLocation(),
+                        skeleton.getSnake())
+                );
+            }
+            else if (toAdd == TailDiscardBodyPart){
+                skeleton.attachNewBodyPart(new TailDiscardBodyPart(
+                        Direction.None,
+                        tail.getLocation(),
+                        skeleton.getSnake())
+                );
+            }
+            else {
+                throw new UnsupportedOperationException(String.format("What a fokin Frankenstine" +
+                        " creature (you can't append %s to the snake", toAdd));
+            }
+        }
         skeleton.makeMove(field, currentTurn);
     }
 
@@ -23,36 +63,33 @@ public class SnakeHead implements SnakeBodyPart {
     }
 
     @Override
+    public void setIsDead() {
+        skeleton.setIsDead();
+    }
+
+    @Override
     public void interactWith(Creature otherCreature) {
-        if (otherCreature instanceof Apple){
+        CreatureType type = otherCreature.getCreatureType();
+        if (type == Apple){
             skeleton.getSnake().incrementScore(10);
-            //skeleton.getSnake().setLastBoost(CreatureType.Apple);
-            SnakeBodyPart tail = getSnake().getTail();
-            skeleton.attachNewBodyPart(new SimpleSnakeBodyPart(
-                    false,
-                    Direction.None,
-                    tail.getLocation(),
-                    skeleton.getSnake())
-            );
+            newBodyParts.add(SimpleSnakeBodyPart);
         }
-        else if (otherCreature instanceof Mushroom){
+        else if (type == Mushroom){
             skeleton.getSnake().incrementScore(20);
-            SnakeBodyPart tail = getSnake().getTail();
-            skeleton.attachNewBodyPart(new TailDiscardBodyPart(
-                    Direction.None,
-                    tail.getLocation(),
-                    skeleton.getSnake())
-            );
+            for (int i = 0; i < tailDiscardsToAppend; i++) {
+                newBodyParts.add(TailDiscardBodyPart);
+            }
         }
-        else if (otherCreature instanceof SimpleSnakeBodyPart) {
+        else if (type == SimpleSnakeBodyPart) {
             skeleton.setIsDead();
         }
-        else if (otherCreature instanceof  TailDiscardBodyPart){
+        else if (type ==  TailDiscardBodyPart){
+            newBodyParts.clear();
         }
-        else if (otherCreature instanceof SnakeHead) {
+        else if (type == SnakeHead) {
             skeleton.setIsDead();
         }
-        else if (otherCreature instanceof Wall){
+        else if (type == Wall){
             skeleton.setIsDead();
         }
         else {

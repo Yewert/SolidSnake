@@ -4,7 +4,6 @@ import model.creatures.Creature;
 import model.creatures.CreatureType;
 import model.utils.Direction;
 import model.utils.Point;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,10 +21,7 @@ public class SnakeBodyPartSkeleton implements SnakeBodyPart {
     public void makeMove(Creature[][] field, int currentTurn) {
         if(precedingBodyPart != null && precedingBodyPart.isDead()){
             isDead = true;
-            return;
         }
-        //TODO: relocate this into usable from all places structure
-        //Maybe location = next.location would be better
         switch (currentDirection){
             case Up:
                 location = new Point(location.getX(), location.getY() - 1);
@@ -56,6 +52,7 @@ public class SnakeBodyPartSkeleton implements SnakeBodyPart {
         return isDead;
     }
 
+
     @Override
     public void interactWith(Creature otherCreature) {
         throw new UnsupportedOperationException();
@@ -72,8 +69,12 @@ public class SnakeBodyPartSkeleton implements SnakeBodyPart {
         }
     }
 
-    void setIsDead(){
+    @Override
+    public void setIsDead(){
         isDead = true;
+        if(nextBodyPart != null){
+            nextBodyPart.setIsDead();
+        }
     }
 
 

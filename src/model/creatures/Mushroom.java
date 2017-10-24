@@ -2,7 +2,8 @@ package model.creatures;
 
 import model.utils.Direction;
 import model.utils.Point;
-import model.creatures.snakes.SnakeBodyPart;
+
+import static model.creatures.CreatureType.*;
 
 public class Mushroom implements Creature {
 
@@ -31,8 +32,10 @@ public class Mushroom implements Creature {
 
     @Override
     public void interactWith(Creature otherCreature) {
-        if (otherCreature instanceof SnakeBodyPart)
+        CreatureType type = otherCreature.getCreatureType();
+        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
             isDead = true;
+        }
         else{
             throw new UnsupportedOperationException("This mushroom doesn't know how to behave in these " +
                     "circumstances WutFace");

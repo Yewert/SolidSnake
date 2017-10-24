@@ -6,6 +6,7 @@ import model.utils.Point;
 
 public interface SnakeBodyPart extends Creature {
     boolean isDead();
+    void setIsDead();
     boolean isHead();
     Point getLocation();
     Direction getCurrentDirection();

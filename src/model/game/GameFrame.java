@@ -1,8 +1,5 @@
 package model.game;
 
-//TODO: move creature -> texture conversion to another place
-import app.drawing.CreatureToTextureConverter;
-import app.drawing.TextureType;
 import model.creatures.Creature;
 import model.creatures.CreatureType;
 import model.utils.Direction;
@@ -15,7 +12,7 @@ public class GameFrame {
 
     private final int height;
     private final int width;
-    private final Map<Point, TextureInfo> textureInfoMap;
+    private final Map<Point, CreatureInfo> typeInfos;
     private final Map<Point, CreatureType> types;
     private final int[] scores;
 
@@ -26,7 +23,7 @@ public class GameFrame {
         this.width = width;
         this.height = height;
         types = extractTypes(creatures);
-        textureInfoMap = convertICreatureToTextureInfo(creatures);
+        typeInfos = convertICreatureToTextureInfo(creatures);
         this.scores = scores;
     }
 
@@ -39,13 +36,11 @@ public class GameFrame {
         return typeMap;
     }
 
-    private Map<Point, TextureInfo> convertICreatureToTextureInfo(Map<Point, Creature> creatures){
-        Map<Point, TextureInfo> textures = new HashMap<>();
+    private Map<Point, CreatureInfo> convertICreatureToTextureInfo(Map<Point, Creature> creatures){
+        Map<Point, CreatureInfo> textures = new HashMap<>();
         for (Point location : creatures.keySet()) {
             Creature creature = creatures.get(location);
-            TextureInfo texture = new TextureInfo(
-                    CreatureToTextureConverter.converters
-                            .get(creature.getCreatureType()),
+            CreatureInfo texture = new CreatureInfo(creature.getCreatureType(),
                     creature.getCurrentDirection());
             textures.put(location, texture);
         }
@@ -54,17 +49,17 @@ public class GameFrame {
 
 
 
-    public class TextureInfo{
-        private TextureType type;
+    public class CreatureInfo {
+        private CreatureType type;
         private Direction direction;
 
-        public TextureInfo(TextureType type,
-                    Direction direction){
+        public CreatureInfo(CreatureType type,
+                            Direction direction){
             this.type = type;
             this.direction = direction;
         }
 
-        public TextureType getType() {
+        public CreatureType getType() {
             return type;
         }
         public Direction getDirection() {
@@ -80,8 +75,8 @@ public class GameFrame {
         return height;
     }
 
-    public Map<Point, TextureInfo> getTexturesInfo(){
-        return textureInfoMap;
+    public Map<Point, CreatureInfo> getCreaturesInfo(){
+        return typeInfos;
     }
 
     public int[] getScores() {

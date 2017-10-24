@@ -7,12 +7,10 @@ public class Snake {
 
     private SnakeBodyPart head;
     private int score;
-    //private CreatureType lastBoost;
 
     public Snake(Point location, Direction startingDirection) {
         this.head = new SnakeHead(startingDirection, location, this);
         score = 0;
-        //lastBoost = null;
     }
     public SnakeBodyPart getHead() {
         return head;
@@ -51,18 +49,4 @@ public class Snake {
         }
         score += value;
     }
-
-//    CreatureType getLastBoost() {
-//        return lastBoost;
-//    }
-//
-//    void setLastBoost(CreatureType boost){
-//        lastBoost = boost;
-//    }
-//
-//    void resetLastBoost(){
-//        lastBoost = null;
-//    }
-
-
 }

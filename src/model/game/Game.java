@@ -22,9 +22,9 @@ public class Game {
     private final Snake[] snakes;
     private int turnNumber = 0;
     private int appleSpawnRate = 20;
-    private int appleDeathRate = 30;
-    private int mushroomSpawnRate = 50;
-    private int mushroomDeathRate = 20;
+    private int appleDeathRate = 50;
+    private int mushroomSpawnRate = 40;
+    private int mushroomDeathRate = 30;
     private boolean foodSpawnActivated = true;
 
     public Game(int width, int height, int snakeCount){
@@ -56,13 +56,17 @@ public class Game {
 
     public Game(GameSettings settings){
         foodSpawnActivated = settings.isFoodSpawnEnabled();
-        //TODO: 2 different checkings
-        if (appleSpawnRate < 0
-                    || appleDeathRate < 1
-                    || mushroomSpawnRate < 0
-                    || mushroomDeathRate < 1){
+        if (!foodSpawnActivated){
+            appleSpawnRate = 0;
+            mushroomSpawnRate = 0;
+        }
+        if (mushroomDeathRate < 0 || appleDeathRate < 0){
+            throw new IllegalArgumentException("How can you die before you were born, Benjamin?" +
+                    "(Negative death rates are illegal)");
+        }
+        if (appleSpawnRate < 0 || mushroomSpawnRate < 0){
             throw new IllegalArgumentException("My name is Doctor. Doctor who?" +
-                    " (One of food death/spawn rates is illegal");
+                    " (Negative spawn rates are illegal)");
         }
         snakes = new Snake[settings.getSnakesAmount()];
         appleSpawnRate = settings.getAppleSpawnRate();
@@ -70,14 +74,17 @@ public class Game {
         mushroomSpawnRate = settings.getMushroomSpawnRate();
         mushroomDeathRate = settings.getMushroomDeathRate();
         CreatureType[][] initialField = settings.getInitialField();
-        field = new Creature[initialField.length][initialField[0].length];
+        field = new Creature[initialField[0].length][initialField.length];
         if (initialField == null){
             throw new IllegalArgumentException("You w0t m8? It's a bloody void! (Field was null)");
         }
         int snakeNumber = 0;
-        for (int i = 0; i < initialField.length; i++) {
-            for (int j = 0; j < initialField[0].length; j++) {
-                switch (initialField[i][j]){
+        for (int j = 0; j < initialField.length; j++) {
+            for (int i = 0; i < initialField[0].length; i++) {
+                if (initialField[j][i] == null){
+                    continue;
+                }
+                switch (initialField[j][i]){
                     case Wall:
                         field[i][j] = new Wall(new Point(i, j));
                         break;
@@ -88,8 +95,6 @@ public class Game {
                         field[i][j] = new Mushroom(new Point(i, j),
                                 0, mushroomDeathRate);
                         break;
-                    case None:
-                        break;
                     case SnakeHead:
                         Snake snake = new Snake(new Point(i, j), Direction.None);
                         field[i][j] = snake.getHead();
@@ -99,7 +104,7 @@ public class Game {
                     default:
                         throw new IllegalArgumentException(String.format("Access denied!" +
                                 " (%s) is not allowed here",
-                                initialField[i][j].toString()));
+                                initialField[j][i].toString()));
                 }
             }
         }
@@ -144,7 +149,7 @@ public class Game {
             }
         }
 
-        if(foodSpawnActivated && turnNumber % appleSpawnRate == 0) {
+        if(foodSpawnActivated && appleSpawnRate != 0 && turnNumber % appleSpawnRate == 0) {
             Point[] apples = generateSafeRandomPoints(snakes.length,
                     0, field.length - 1,
                     0, field[0].length - 1,
@@ -155,7 +160,7 @@ public class Game {
                 }
             }
         }
-        if(foodSpawnActivated && turnNumber % mushroomSpawnRate == 0) {
+        if(foodSpawnActivated && mushroomSpawnRate != 0 && turnNumber % mushroomSpawnRate == 0) {
             Point[] mushrooms = generateSafeRandomPoints(snakes.length
                     , 0, field.length - 1,
                     0, field[0].length - 1,
@@ -181,14 +186,14 @@ public class Game {
     private Map<Point, Creature> resolveCollisions(Map<Point, List<Creature>> collisions){
         Map<Point, Creature> resolved = new HashMap<>();
         for (Point location: collisions.keySet()) {
-            List<Creature> collidingCreatures = collisions.get(location);
+            List<Creature> collidingCreatures = dropDead(collisions.get(location));
             int length = collidingCreatures.size();
-            if(length > 1)
-
-            for (int i = 0; i < length - 1; i++) {
-                for (int j = i + 1; j < length; j++) {
-                    collidingCreatures.get(i).interactWith(collidingCreatures.get(j));
-                    collidingCreatures.get(j).interactWith(collidingCreatures.get(i));
+            if(length > 1){
+                for (int i = 0; i < length - 1; i++) {
+                    for (int j = i + 1; j < length; j++) {
+                        collidingCreatures.get(i).interactWith(collidingCreatures.get(j));
+                        collidingCreatures.get(j).interactWith(collidingCreatures.get(i));
+                    }
                 }
             }
             Creature survivedCreature = null;
@@ -207,7 +212,23 @@ public class Game {
             }
             resolved.put(location, survivedCreature);
         }
-        return resolved;
+        Map<Point, Creature> survived = new HashMap<>();
+        for (Point location : resolved.keySet()) {
+            if (!resolved.get(location).isDead()){
+                survived.put(location, resolved.get(location));
+            }
+        }
+        return survived;
+    }
+
+    private List<Creature> dropDead(List<Creature> creatures) {
+        List<Creature> alive = new ArrayList<>();
+        for (Creature creature : creatures) {
+            if (!creature.isDead()){
+                alive.add(creature);
+            }
+        }
+        return alive;
     }
 
     private Map<Point, List<Creature>> makeMoves(Direction[] playerDirection){

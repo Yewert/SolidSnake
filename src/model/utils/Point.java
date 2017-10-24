@@ -47,4 +47,9 @@ public class Point {
                 nextInt(y1 + borderY, y2 - borderY + 1);
         return new Point(randomX, randomY);
     }
+
+    @Override
+    public String toString() {
+        return String.format("X:%d Y:%d", x, y);
+    }
 }

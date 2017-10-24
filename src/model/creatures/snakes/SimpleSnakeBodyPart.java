@@ -6,13 +6,15 @@ import model.creatures.Creature;
 import model.utils.Direction;
 import model.utils.Point;
 
+import static model.creatures.CreatureType.*;
+
 public class SimpleSnakeBodyPart implements SnakeBodyPart {
 
     private final SnakeBodyPartSkeleton skeleton;
-    private static final CreatureType CREATURE_TYPE = CreatureType.SimpleSnakeBodyPart;
+    private static final CreatureType CREATURE_TYPE = SimpleSnakeBodyPart;
 
-    public SimpleSnakeBodyPart(boolean isHead, Direction direction, Point location, Snake snake) {
-        skeleton = new SnakeBodyPartSkeleton(isHead, direction, location, snake);
+    public SimpleSnakeBodyPart(Direction direction, Point location, Snake snake) {
+        skeleton = new SnakeBodyPartSkeleton(false, direction, location, snake);
     }
     
     @Override
@@ -26,6 +28,11 @@ public class SimpleSnakeBodyPart implements SnakeBodyPart {
     }
 
     @Override
+    public void setIsDead() {
+        skeleton.setIsDead();
+    }
+
+    @Override
     public boolean isHead() {
         return skeleton.isHead();
     }
@@ -33,7 +40,8 @@ public class SimpleSnakeBodyPart implements SnakeBodyPart {
 
     @Override
     public void interactWith(Creature otherCreature) {
-        if (otherCreature instanceof SnakeBodyPart) {
+        CreatureType type = otherCreature.getCreatureType();
+        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
             skeleton.setIsDead();
         }
         else {

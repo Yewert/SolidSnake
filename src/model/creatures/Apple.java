@@ -1,8 +1,9 @@
 package model.creatures;
 
-import model.creatures.snakes.SnakeBodyPart;
 import model.utils.Direction;
 import model.utils.Point;
+
+import static model.creatures.CreatureType.*;
 
 public class Apple implements Creature {
 
@@ -31,8 +32,10 @@ public class Apple implements Creature {
 
     @Override
     public void interactWith(Creature otherCreature) {
-        if (otherCreature instanceof SnakeBodyPart)
+        CreatureType type = otherCreature.getCreatureType();
+        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
             isDead = true;
+        }
         else{
             throw new UnsupportedOperationException("This apple doesn't know how to behave in these " +
                     "circumstances WutFace");
