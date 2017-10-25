@@ -2,7 +2,6 @@ package app;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import app.drawing.TextureType;
