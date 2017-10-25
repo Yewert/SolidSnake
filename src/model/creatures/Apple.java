@@ -35,6 +35,7 @@ public class Apple implements Creature {
         CreatureType type = otherCreature.getCreatureType();
         if (CreatureTypeValidator.isSnake(type)) {
             isDead = true;
+            return;
         }
         else{
             throw new IllegalArgumentException("This apple doesn't know how to behave in these " +

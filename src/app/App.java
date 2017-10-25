@@ -168,7 +168,9 @@ public class App extends Application {
                 if (!isGameOver && !isPaused) {
                     if ((now - prevTime) >= 100 * 1000000) {
                         prevTime = now;
-                        frame = game.makeTurn(currDir);
+                        Direction[] directions = new Direction[snakeCount];
+                        System.arraycopy(currDir, 0, directions, 0, snakeCount);
+                        frame = game.makeTurn(directions);
                         if (frame == null) {
                             isGameOver = true;
                         }
@@ -180,6 +182,12 @@ public class App extends Application {
         };
 
         return root;
+    }
+
+    private Direction[] extractDirectionsCorrepondingToSnakeCount(){
+        Direction[] result = new Direction[snakeCount];
+        System.arraycopy(currDir, 0, result, 0, snakeCount);
+        return result;
     }
 
     private Parent createMainMenu(){
@@ -248,11 +256,13 @@ public class App extends Application {
 
     private static void reset(int snakeCount) {
         isGameOver = false;
-        currDir = new Direction[snakeCount];
+        currDir = new Direction[3];
         for (int i = 0; i < currDir.length; i++) {
             currDir[i] = Direction.None;
         }
         game = new Game(Settings.getCols(), Settings.getRows(), snakeCount);
-        frame = game.makeTurn(currDir);
+        Direction[] directions = new Direction[snakeCount];
+        System.arraycopy(currDir, 0, directions, 0, snakeCount);
+        frame = game.makeTurn(directions);
     }
 }

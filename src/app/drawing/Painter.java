@@ -32,7 +32,10 @@ public class Painter {
 
     private static void paintFrame(GameFrame frame, GraphicsContext gc){
         frame.getCreaturesInfo().forEach((p, ci) -> {
-            gc.setFill(Settings.getColorDict().get(CreatureToTextureConverter.converters.get(ci.getType())));
+            gc.setFill(Settings.getColorDict()
+                    .get(CreatureToTextureConverter.converters
+                            .get(ci.getType()))
+                    .apply(ci.getPlayerNumber()));
             paintPoint(p, gc);
         });
     }
