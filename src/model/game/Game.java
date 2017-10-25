@@ -276,7 +276,6 @@ public class Game {
         }
         return points;
     }
-
     private Point[] generateSafeRandomPoints(int amount, int x1, int x2, int y1, int y2, int borderX, int borderY){
         Set<Point> points = generatePointForEveryCell(x1, x2, y1, y2, borderX, borderY);
         Point[] randomPoints = new Point[amount];

@@ -10,4 +10,6 @@ public interface GameSettings {
     boolean isFoodSpawnEnabled();
     CreatureType[][] getInitialField();
     int getSnakesAmount();
+    int getWidth();
+    int getHeight();
 }

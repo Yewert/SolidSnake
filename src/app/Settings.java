@@ -9,14 +9,21 @@ import app.drawing.TextureType;
 import javafx.scene.paint.Color;
 import model.creatures.Creature;
 import model.creatures.CreatureType;
+import model.game.GameSettings;
 
 //TODO: It's a placeholder for settings configuration, something should be implemented in "model" in order to get everything working
 // Note: shitty implementation
-public final class Settings {
+public class Settings {
 
-    private static int size = 20;
-    private static int cols = 30;
-    private static int rows = 30;
+    private int size;
+    private VisualSettings skins; //= new SkinSettings(1, 1, 1);
+    private GameSettings gameplaySettings;
+
+    public Settings(int size, VisualSettings skinSettings, GameSettings gameplaySettings){
+        this.size = size;
+        this.skins = skinSettings;
+        this.gameplaySettings = gameplaySettings;
+    }
 
     private static final Map<TextureType, Function<Integer, Color>> colorDict = Map.of(
         TextureType.SimpleSnakeBodyPart, (snake) -> Color.LIGHTBLUE,
@@ -39,34 +46,44 @@ public final class Settings {
     );
 
     // Note: we can get this info from GameFrame class --> are these getters unnecessary?
-    public static int getSize() {
+    public int getSize() {
         return size;
     }
-    public static int getCols() {
-        return cols;
+    public int getCols() {
+        return gameplaySettings.getWidth();
     }
-    public static int getRows() {
-        return rows;
-    }
-
-    public static int getHeight() {
-        return cols * size;
-    }
-    public static int getWidth() {
-        return rows * size;
+    public int getRows() {
+        return gameplaySettings.getHeight();
     }
 
-    public static void setSize(int size) {
-        Settings.size = size;
+    public int getHeight() {
+        return getCols() * size;
     }
-    public static void setCols(int cols) {
-        Settings.cols = cols;
+    public int getWidth() {
+        return getRows() * size;
     }
-    public static void setRows(int rows) {
-        Settings.rows = rows;
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public static Map<TextureType, Function<Integer, Color>> getColorDict(){
         return colorDict;
+    }
+
+    public GameSettings getGameplaySettings() {
+        return gameplaySettings;
+    }
+
+    public void setGameplaySettings(GameSettings gameplaySettings) {
+        this.gameplaySettings = gameplaySettings;
+    }
+
+    public VisualSettings getSkins() {
+        return skins;
+    }
+
+    public void setSkins(VisualSettings skins) {
+        this.skins = skins;
     }
 }

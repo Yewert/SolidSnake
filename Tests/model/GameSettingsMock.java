@@ -61,4 +61,14 @@ public class GameSettingsMock implements GameSettings {
     public int getSnakesAmount() {
         return snakesAmount;
     }
+
+    @Override
+    public int getWidth() {
+        return field.length;
+    }
+
+    @Override
+    public int getHeight() {
+        return field[0].length;
+    }
 }
