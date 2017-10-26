@@ -4,7 +4,6 @@ import model.creatures.CreatureType;
 import java.util.Map;
 
 public final class CreatureToTextureConverter {
-
     public static final Map<CreatureType, TextureType> converters = Map.of(
             CreatureType.SimpleSnakeBodyPart, TextureType.SimpleSnakeBodyPart,
             CreatureType.SnakeHead, TextureType.SnakeHead,

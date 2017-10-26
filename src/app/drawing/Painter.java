@@ -29,7 +29,6 @@ public class Painter {
             paintScore(frame, gc);
             prevFrame = frame;
         } else {
-
             if (prevFrame == null) {
                 throw new IllegalArgumentException("Previous frame was null");
             }
@@ -78,7 +77,9 @@ public class Painter {
     }
 
     private Image rotateImage(Image image, GameFrame.CreatureInfo creatureInfo){
-        if (creatureInfo.getType() == CreatureType.SnakeHead)
+        if (creatureInfo.getType() == CreatureType.SnakeHead 
+            || creatureInfo.getDirection() == Up
+            || creatureInfo.getDirection() == None)
             return image;
 
         ImageView iv = new ImageView(image);

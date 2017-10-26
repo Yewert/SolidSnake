@@ -43,7 +43,6 @@ public class App extends Application {
     private static AnimationTimer gameLoop;
     private static Settings settings;
     private static Painter painter;
-
     private static int width = 800;
     private static int height = 600;
 
@@ -69,7 +68,6 @@ public class App extends Application {
                         snakeCount)
                 );
         painter = new Painter(settings);
-
         theStage = primaryStage;
         theStage.setScene(new Scene(createMainMenu(), Color.BLACK));
         theStage.show();
@@ -187,8 +185,7 @@ public class App extends Application {
                         }
                     }
                 }
-                painter.paint(frame, context);
-
+              painter.paint(frame, context);
             }
         };
 
