@@ -5,7 +5,10 @@ import model.game.GameSettings;
 import model.utils.Point;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static model.creatures.CreatureType.*;
 
@@ -79,26 +82,30 @@ public class GameplaySettings implements GameSettings {
     }
 
     public static CreatureType[][] getRandomField (int width, int height, int snakeCount) throws IllegalArgumentException{
-        CreatureType[][] field = new CreatureType[width][height];
+        CreatureType[][] field = new CreatureType[height][width];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(i == 0 || i == width - 1 || j == 0 || j == height - 1) {
-                    field[i][j] = Wall;
+                    field[j][i] = Wall;
                 }
             }
         }
         Point[] snakesLocations = GameplaySettings.generateSafeRandomPoints(field,
                 snakeCount,0, field.length - 1,
                 0, field[0].length - 1, 2, 2);
-        Point[] applesLocations = GameplaySettings.generateSafeRandomPoints(field,
-                snakeCount, 0, field.length - 1,
-                0, field[0].length - 1, 1, 1);
+
         for (int i = 0; i < snakeCount; i++) {
             if (snakesLocations[i] == null) {
                 throw new IllegalArgumentException("The world is too small for both of us!" +
                         "(Field too small - could not spawn a snake)");
             }
             field[snakesLocations[i].getX()][snakesLocations[i].getY()] = SnakeHead;
+        }
+
+        Point[] applesLocations = GameplaySettings.generateSafeRandomPoints(field,
+                snakeCount, 0, field.length - 1,
+                0, field[0].length - 1, 1, 1);
+        for (int i = 0; i < snakeCount; i++) {
             if(applesLocations[i] != null){
                 field[applesLocations[i].getX()][applesLocations[i].getY()] = Apple;
             }
@@ -106,38 +113,38 @@ public class GameplaySettings implements GameSettings {
         return field;
     }
 
-    private static Set<Point> generatePointForEveryCell(int x1, int x2, int y1, int y2,
-                                                        int borderX, int borderY){
+    private static LinkedList<Point> generatePointForEveryCell(int x1, int x2, int y1, int y2,
+                                                               int borderX, int borderY){
         Set<Point> points = new HashSet<>();
         for (int x = x1 + borderX; x < x2 - borderX + 1; x++) {
             for (int y = y1 + borderY; y < y2 - borderY + 1; y++) {
                 points.add(new Point(x, y));
             }
         }
-        return points;
+        return new LinkedList<> (points);
     }
 
     private static Point[] generateSafeRandomPoints(CreatureType[][] field, int amount,
                                                     int x1, int x2, int y1, int y2,
                                                     int borderX, int borderY){
-        Set<Point> points = generatePointForEveryCell(x1, x2, y1, y2, borderX, borderY);
+        List<Point> points = generatePointForEveryCell(x1, x2, y1, y2, borderX, borderY);
         Point[] randomPoints = new Point[amount];
         int pointNumber = 0;
-        while (true) {
-            if (points.size() == 0){
+        while (true){
+            if(pointNumber == amount){
                 break;
             }
-            Point randomPoint = Point.generateRandomInBounds(x1, x2,
-                    y1, y2,
-                    borderX, borderY);
-            if (field[randomPoint.getX()][randomPoint.getY()] == null) {
-                randomPoints[pointNumber] = randomPoint;
+            if(points.size() == 0){
+                break;
+            }
+            int index = ThreadLocalRandom.current().
+                    nextInt(0, points.size());
+            Point point = points.get(index);
+            if(field[point.getX()][point.getY()] == null) {
+                randomPoints[pointNumber] = point;
                 pointNumber++;
             }
-            if (pointNumber == amount){
-                break;
-            }
-            points.remove(randomPoint);
+            points.remove(index);
         }
         return randomPoints;
     }

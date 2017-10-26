@@ -26,7 +26,6 @@ import app.drawing.Painter;
 import model.utils.Direction;
 import model.game.Game;
 import model.game.GameFrame;
-
 import java.util.Map;
 
 public class App extends Application {

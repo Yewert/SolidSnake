@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
+import app.GameplaySettings;
 
 public class App extends JFrame
 {
@@ -164,7 +165,9 @@ public class App extends JFrame
     private void reset(int snakeCount) {
         isGameOver = false;
         currDir = Direction.None;
-        game = new Game(cols, rows, snakeCount);
+        GameplaySettings settings = new GameplaySettings(GameplaySettings.getRandomField(cols, rows, snakeCount),
+                true, 20, 50, 40, 30, snakeCount);
+        game = new Game(settings);
         frame = game.makeTurn(new Direction[]{currDir});
     }
 }

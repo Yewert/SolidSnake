@@ -12,9 +12,11 @@ import model.utils.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Game {
@@ -26,33 +28,6 @@ public class Game {
     private int mushroomSpawnRate = 40;
     private int mushroomDeathRate = 30;
     private boolean foodSpawnActivated = true;
-
-    public Game(int width, int height, int snakeCount) throws IllegalArgumentException{
-        field = new Creature[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if(i == 0 || i == width - 1 || j == 0 || j == height - 1) {
-                    field[i][j] = new Wall(new Point(i, j));
-                }
-            }
-        }
-        snakes = new Snake[snakeCount];
-        Point[] snakesLocations = generateSafeRandomPoints(snakeCount,0, field.length - 1,
-                0, field[0].length - 1, 2, 2);
-        Point[] applesLocations = generateSafeRandomPoints(snakeCount, 0, field.length - 1,
-                0, field[0].length - 1, 1, 1);
-        for (int i = 0; i < snakeCount; i++) {
-            if (snakesLocations[i] == null) {
-                throw new IllegalArgumentException("The world is too small for both of us!" +
-                        "(Field too small - could not spawn a snake)");
-            }
-            snakes[i] = new Snake(snakesLocations[i], Direction.None);
-            if(applesLocations[i] != null){
-                field[applesLocations[i].getX()][applesLocations[i].getY()] =
-                            new Apple(applesLocations[i], turnNumber, appleDeathRate);
-            }
-        }
-    }
 
     public Game(GameSettings settings) throws IllegalArgumentException{
         foodSpawnActivated = settings.isFoodSpawnEnabled();
@@ -110,17 +85,17 @@ public class Game {
         }
         if (snakeNumber != settings.getSnakesAmount()){
             throw new IllegalArgumentException("snakes! It has to be snakes!" +
-                    " (Snake amount is not equal than found on field");
+                    " (Snake amount is not equal to the amount found on the field");
         }
     }
 
     public GameFrame makeTurn(Direction[] playerDirection){
-        turnNumber++;
         if (playerDirection.length != snakes.length){
             throw new IllegalArgumentException("Learn how to count sheeps " +
                     "and only then move on to snakes" +
                     " (amount of snakes is not equal to amount of given directions)");
         }
+        turnNumber++;
         Map<Point, List<Creature>> collisions = makeMoves(playerDirection);
         Map<Point, Creature> survivedCreatures = resolveCollisions(collisions);
         cleanUp();
@@ -149,7 +124,7 @@ public class Game {
         }
 
         if(foodSpawnActivated && appleSpawnRate != 0 && turnNumber % appleSpawnRate == 0) {
-            Point[] apples = generateSafeRandomPoints(snakes.length,
+            Point[] apples = Game.generateSafeRandomPoints(field, snakes.length,
                     0, field.length - 1,
                     0, field[0].length - 1,
                     1, 1);
@@ -160,8 +135,8 @@ public class Game {
             }
         }
         if(foodSpawnActivated && mushroomSpawnRate != 0 && turnNumber % mushroomSpawnRate == 0) {
-            Point[] mushrooms = generateSafeRandomPoints(snakes.length
-                    , 0, field.length - 1,
+            Point[] mushrooms = Game.generateSafeRandomPoints(field, snakes.length,
+                    0, field.length - 1,
                     0, field[0].length - 1,
                     1, 1);
             for (Point mushroomLocation : mushrooms) {
@@ -269,34 +244,38 @@ public class Game {
         return collisions;
     }
 
-    private Set<Point> generatePointForEveryCell(int x1, int x2, int y1, int y2, int borderX, int borderY){
+    private static LinkedList<Point> generatePointForEveryCell(int x1, int x2, int y1, int y2,
+                                                               int borderX, int borderY){
         Set<Point> points = new HashSet<>();
         for (int x = x1 + borderX; x < x2 - borderX + 1; x++) {
             for (int y = y1 + borderY; y < y2 - borderY + 1; y++) {
                 points.add(new Point(x, y));
             }
         }
-        return points;
+        return new LinkedList<> (points);
     }
-    private Point[] generateSafeRandomPoints(int amount, int x1, int x2, int y1, int y2, int borderX, int borderY){
-        Set<Point> points = generatePointForEveryCell(x1, x2, y1, y2, borderX, borderY);
+
+    private static Point[] generateSafeRandomPoints(Creature[][] field, int amount,
+                                                    int x1, int x2, int y1, int y2,
+                                                    int borderX, int borderY){
+        List<Point> points = generatePointForEveryCell(x1, x2, y1, y2, borderX, borderY);
         Point[] randomPoints = new Point[amount];
         int pointNumber = 0;
-        while (true) {
-            if (points.size() == 0){
+        while (true){
+            if(pointNumber == amount){
                 break;
             }
-            Point randomPoint = Point.generateRandomInBounds(x1, x2,
-                    y1, y2,
-                    borderX, borderY);
-            if (field[randomPoint.getX()][randomPoint.getY()] == null) {
-                randomPoints[pointNumber] = randomPoint;
+            if(points.size() == 0){
+                break;
+            }
+            int index = ThreadLocalRandom.current().
+                    nextInt(0, points.size());
+            Point point = points.get(index);
+            if(field[point.getX()][point.getY()] == null) {
+                randomPoints[pointNumber] = point;
                 pointNumber++;
             }
-            if (pointNumber == amount){
-                break;
-            }
-            points.remove(randomPoint);
+            points.remove(index);
         }
         return randomPoints;
     }
