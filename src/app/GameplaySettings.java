@@ -3,7 +3,6 @@ package app;
 import model.creatures.CreatureType;
 import model.game.GameSettings;
 import model.utils.Point;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -90,10 +89,10 @@ public class GameplaySettings implements GameSettings {
                 }
             }
         }
+      
         Point[] snakesLocations = GameplaySettings.generateSafeRandomPoints(field,
                 snakeCount,0, field.length - 1,
                 0, field[0].length - 1, 2, 2);
-
         for (int i = 0; i < snakeCount; i++) {
             if (snakesLocations[i] == null) {
                 throw new IllegalArgumentException("The world is too small for both of us!" +
@@ -145,6 +144,7 @@ public class GameplaySettings implements GameSettings {
                 pointNumber++;
             }
             points.remove(index);
+
         }
         return randomPoints;
     }

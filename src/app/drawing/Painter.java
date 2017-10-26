@@ -1,5 +1,6 @@
 package app.drawing;
 
+import app.GameplaySettings;
 import app.Settings;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;

@@ -57,7 +57,7 @@ public class App extends Application {
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         settings = new Settings(20,
-                new SkinSettings(1, 2 ,1),
+                new SkinSettings(1, 1 ,1),
                 new GameplaySettings(GameplaySettings.getRandomField(30, 30, snakeCount),
                         true,
                         20,
@@ -189,6 +189,12 @@ public class App extends Application {
         };
 
         return root;
+    }
+
+    private Direction[] extractDirectionsCorrepondingToSnakeCount(){
+        Direction[] result = new Direction[snakeCount];
+        System.arraycopy(currDir, 0, result, 0, snakeCount);
+        return result;
     }
 
     private Parent createMainMenu(){
