@@ -74,9 +74,7 @@ public class MainMenu extends Menu {
         mainExit.setOnMouseClicked(event -> System.exit(0));
 
 
-        optionsControls.setOnMouseClicked(event -> {
-            infoText.setText("Not featured yet");
-        });
+        optionsControls.setOnMouseClicked(event -> infoText.setText("Not featured yet"));
         optionsSkins.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuOptions, menuSkins);
             infoText.setText("");
@@ -87,12 +85,8 @@ public class MainMenu extends Menu {
         });
 
 
-        skinsBlue.setOnMouseClicked(event -> {
-            infoText.setText("Not featured yet");
-        });
-        skinsRed.setOnMouseClicked(event -> {
-            infoText.setText("Not featured yet");
-        });
+        skinsBlue.setOnMouseClicked(event -> infoText.setText("Not featured yet"));
+        skinsRed.setOnMouseClicked(event -> infoText.setText("Not featured yet"));
         skinsBack.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuSkins, menuOptions);
             infoText.setText("");
@@ -100,9 +94,7 @@ public class MainMenu extends Menu {
 
 
         playSolo.setOnMouseClicked(event -> {});
-        playDuo.setOnMouseClicked(event -> {
-            infoText.setText("Not featured yet");
-        });
+        playDuo.setOnMouseClicked(event -> infoText.setText("Not featured yet"));
         playBack.setOnMouseClicked(event -> {
             fadeFromMenuToMenu(menuPlay, menuMain);
             infoText.setText("");

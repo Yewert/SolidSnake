@@ -1,6 +1,5 @@
 package app;
 
-
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -60,7 +59,7 @@ public class App extends Application {
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         settings = new Settings(20,
-                new SkinSettings(1, 1 ,1),
+                new SkinSettings(1, 2 ,1),
                 new GameplaySettings(GameplaySettings.getRandomField(30, 30, snakeCount),
                         true,
                         20,
@@ -106,9 +105,7 @@ public class App extends Application {
             FadeTransition fade = new FadeTransition(Duration.millis(300), root);
             fade.setFromValue(1);
             fade.setToValue(0);
-            fade.setOnFinished(e -> {
-                theStage.setScene(new Scene(createMainMenu(), Color.BLACK));
-            });
+            fade.setOnFinished(e -> theStage.setScene(new Scene(createMainMenu(), Color.BLACK)));
             fade.play();
         });
 
@@ -196,12 +193,6 @@ public class App extends Application {
         };
 
         return root;
-    }
-
-    private Direction[] extractDirectionsCorrepondingToSnakeCount(){
-        Direction[] result = new Direction[snakeCount];
-        System.arraycopy(currDir, 0, result, 0, snakeCount);
-        return result;
     }
 
     private Parent createMainMenu(){

@@ -22,24 +22,7 @@ public class SnakeBodyPartSkeleton implements SnakeBodyPart {
         if(precedingBodyPart != null && precedingBodyPart.isDead()){
             isDead = true;
         }
-        switch (currentDirection){
-            case Up:
-                location = new Point(location.getX(), location.getY() - 1);
-                break;
-            case Down:
-                location = new Point(location.getX(), location.getY() + 1);
-                break;
-            case Left:
-                location = new Point(location.getX() - 1, location.getY());
-                break;
-            case Right:
-                location = new Point(location.getX() + 1, location.getY());
-                break;
-            case None:
-                break;
-            default:
-                throw new UnsupportedOperationException("Snake must go somewhere!");
-        }
+        location = new Point(location, currentDirection);
         if(!isHead){
             previousDirection = currentDirection;
             currentDirection = precedingBodyPart.getPreviousDirection();

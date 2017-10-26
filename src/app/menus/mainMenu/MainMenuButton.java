@@ -35,18 +35,12 @@ public class MainMenuButton extends MenuButton {
         setAlignment(Pos.CENTER);
         getChildren().addAll(bg, text);
 
-        setOnMouseEntered(event -> {
-            text.setFill(Color.WHITE);
-        });
+        setOnMouseEntered(event -> text.setFill(Color.WHITE));
         setOnMouseExited(event -> {
             bg.setFill(Color.TRANSPARENT);
             text.setFill(Color.DARKGREY);
         });
-        setOnMousePressed(event -> {
-            bg.setFill(gradient);
-        });
-        setOnMouseReleased(event -> {
-            bg.setFill(Color.TRANSPARENT);
-        });
+        setOnMousePressed(event -> bg.setFill(gradient));
+        setOnMouseReleased(event -> bg.setFill(Color.TRANSPARENT));
     }
 }

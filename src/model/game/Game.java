@@ -232,6 +232,9 @@ public class Game {
     }
 
     private Map<Point, List<Creature>> makeMoves(Direction[] playerDirection){
+        for (int i = 0; i < snakes.length; i++) {
+            snakes[i].setCurrentDirection(playerDirection[i]);
+        }
         Map<Point, List<Creature>> collisions =
                 new HashMap<>();
         for (Creature[] row : field){
@@ -251,7 +254,6 @@ public class Game {
             Snake snake = snakes[i];
             if (snake.isDead())
                 continue;
-            snake.setCurrentDirection(playerDirection[i]);
             SnakeBodyPart snakeBodyPart = snake.getHead();
             while (true){
                 snakeBodyPart.makeMove(field, turnNumber);

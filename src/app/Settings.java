@@ -1,15 +1,10 @@
 package app;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import app.drawing.TextureType;
 import javafx.scene.paint.Color;
-import model.creatures.Creature;
-import model.creatures.CreatureType;
 import model.game.GameSettings;
+import java.util.Map;
+import java.util.function.Function;
 
 //TODO: It's a placeholder for settings configuration, something should be implemented in "model" in order to get everything working
 // Note: shitty implementation

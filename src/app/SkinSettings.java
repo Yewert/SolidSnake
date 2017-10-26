@@ -17,14 +17,14 @@ public class SkinSettings implements VisualSettings {
                         SimpleSnakeBodyPart, new Image(String.format("images/Skin%d/Simple.png", player1Skin))
                 ),
                 1, Map.of(
-                        SnakeHead, new Image(String.format("images/Skin%d/Head2.png", player1Skin)),
-                        TailDiscardSnakeBodyPart, new Image(String.format("images/Skin%d/TailDiscard.png", player1Skin)),
-                        SimpleSnakeBodyPart, new Image(String.format("images/Skin%d/Simple.png", player1Skin))
+                        SnakeHead, new Image(String.format("images/Skin%d/Head2.png", player2Skin)),
+                        TailDiscardSnakeBodyPart, new Image(String.format("images/Skin%d/TailDiscard.png", player2Skin)),
+                        SimpleSnakeBodyPart, new Image(String.format("images/Skin%d/Simple.png", player2Skin))
                 ),
                 2, Map.of(
-                        SnakeHead, new Image(String.format("images/Skin%d/Head3.png", player1Skin)),
-                        TailDiscardSnakeBodyPart, new Image(String.format("images/Skin%d/TailDiscard.png", player1Skin)),
-                        SimpleSnakeBodyPart, new Image(String.format("images/Skin%d/Simple.png", player1Skin))
+                        SnakeHead, new Image(String.format("images/Skin%d/Head3.png", player3Skin)),
+                        TailDiscardSnakeBodyPart, new Image(String.format("images/Skin%d/TailDiscard.png", player3Skin)),
+                        SimpleSnakeBodyPart, new Image(String.format("images/Skin%d/Simple.png", player3Skin))
                 )
         );
         spritesForSubjects = Map.of(

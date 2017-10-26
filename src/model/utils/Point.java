@@ -2,6 +2,8 @@ package model.utils;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import static model.utils.Direction.*;
+
 public class Point {
     private int x;
     private int y;
@@ -9,6 +11,33 @@ public class Point {
     public Point(int x, int y){
         this.x = x;
         this.y = y;
+    }
+
+    public Point(Point point, Direction directionToApply) throws IllegalArgumentException{
+        switch (directionToApply){
+            case Up:
+                this.x = point.getX();
+                this.y = point.getY() - 1;
+                return;
+            case Down:
+                this.x = point.getX();
+                this.y = point.getY() + 1;
+                return;
+            case Left:
+                this.x = point.getX() - 1;
+                this.y = point.getY();
+                return;
+            case Right:
+                this.x = point.getX() + 1;
+                this.y = point.getY();
+                return;
+            case None:
+                this.x = point.getX();
+                this.y = point.getY();
+                return;
+            default:
+                throw new IllegalArgumentException("Invalid direction");
+        }
     }
 
 

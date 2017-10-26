@@ -2,7 +2,6 @@ package app;
 
 import model.creatures.CreatureType;
 import model.game.GameSettings;
-import model.utils.Direction;
 import model.utils.Point;
 
 import java.util.HashSet;
