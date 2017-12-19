@@ -5,48 +5,51 @@ import model.utils.Point;
 
 public class Snake {
 
-    private final SnakeBodyPart head;
-    private int score;
+  private final SnakeBodyPart head;
+  private int score;
 
-    public Snake(Point location, Direction startingDirection) {
-        this.head = new SnakeHead(startingDirection, location, this);
-        score = 0;
-    }
-    public SnakeBodyPart getHead() {
-        return head;
-    }
+  public Snake(Point location, Direction startingDirection) {
+    this.head = new SnakeHead(startingDirection, location, this);
+    score = 0;
+  }
 
-    public SnakeBodyPart getTail(){
-        SnakeBodyPart bodyPart = head;
-        while (true){
-            SnakeBodyPart temporaryBodyPart = bodyPart.getNextBodyPart();
-            if(temporaryBodyPart == null)
-                break;
-            bodyPart = temporaryBodyPart;
-        }
-        return bodyPart;
-    }
-    public boolean isDead(){
-        return head.isDead();
-    }
+  public SnakeBodyPart getHead() {
+    return head;
+  }
 
-    public Direction getCurrentDirection() {
-        return head.getCurrentDirection();
+  public SnakeBodyPart getTail() {
+    SnakeBodyPart bodyPart = head;
+    while (true) {
+      SnakeBodyPart temporaryBodyPart = bodyPart.getNextBodyPart();
+      if (temporaryBodyPart == null) {
+        break;
+      }
+      bodyPart = temporaryBodyPart;
     }
+    return bodyPart;
+  }
 
-    public void setCurrentDirection(Direction newDirection) {
-        head.setCurrentDirection(newDirection);
-    }
+  public boolean isDead() {
+    return head.isDead();
+  }
 
-    public int getScore() {
-        return score;
-    }
+  public Direction getCurrentDirection() {
+    return head.getCurrentDirection();
+  }
 
-    protected void incrementScore(int value) {
-        if (value < 0) {
-            throw new UnsupportedOperationException("How are you gonna win if you" +
-                    " are adding negative amount points to score?!");
-        }
-        score += value;
+  public void setCurrentDirection(Direction newDirection) {
+    head.setCurrentDirection(newDirection);
+  }
+
+  public int getScore() {
+    return score;
+  }
+
+  protected void incrementScore(int value) {
+    if (value < 0) {
+      throw new UnsupportedOperationException("How are you gonna win if you" +
+          " are adding negative amount points to score?!");
     }
+    score += value;
+  }
 }

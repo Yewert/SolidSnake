@@ -1,127 +1,129 @@
 package model.creatures.snakes;
 
-import model.creatures.CreatureType;
+import static model.creatures.CreatureType.SimpleSnakeBodyPart;
+import static model.creatures.CreatureType.SnakeHead;
+import static model.creatures.CreatureType.TailDiscardBodyPart;
+
 import model.creatures.Creature;
+import model.creatures.CreatureType;
 import model.utils.Direction;
 import model.utils.Point;
 
-import static model.creatures.CreatureType.*;
-
 class TailDiscardBodyPart implements SnakeBodyPart {
 
-    private static final CreatureType CREATURE_TYPE = TailDiscardBodyPart;
+  private static final CreatureType CREATURE_TYPE = TailDiscardBodyPart;
 
-    private final SnakeBodyPartSkeleton skeleton;
+  private final SnakeBodyPartSkeleton skeleton;
 
-    TailDiscardBodyPart(Direction direction, Point location, Snake snake) {
-        skeleton = new SnakeBodyPartSkeleton(false, direction, location, snake);
+  TailDiscardBodyPart(Direction direction, Point location, Snake snake) {
+    skeleton = new SnakeBodyPartSkeleton(false, direction, location, snake);
+  }
+
+  @Override
+  public void makeMove(Creature[][] field, int currentTurn) {
+    skeleton.makeMove(field, currentTurn);
+  }
+
+  @Override
+  public boolean isDead() {
+    return skeleton.isDead();
+  }
+
+  @Override
+  public void setIsDead() {
+    skeleton.setIsDead();
+  }
+
+  @Override
+  public void interactWith(Creature otherCreature) throws IllegalArgumentException {
+    CreatureType type = otherCreature.getCreatureType();
+    if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
+      skeleton.setIsDead();
+      return;
     }
+    throw new IllegalArgumentException(String.format("DA FAK MADAFAKA?!" +
+            " I DON'T KNOW HOW TO SPEAK TO WHAMEN!" +
+            "(This (%s) doesn't know hot to interact with (%s))",
+        this.toString(),
+        otherCreature.toString()));
+  }
 
-    @Override
-    public void makeMove(Creature[][] field, int currentTurn) {
-        skeleton.makeMove(field, currentTurn);
-    }
+  @Override
+  public void cleanUp() {
+    skeleton.cleanUp();
+  }
 
-    @Override
-    public boolean isDead() {
-        return skeleton.isDead();
-    }
+  @Override
+  public boolean isHead() {
+    return skeleton.isHead();
+  }
 
-    @Override
-    public void setIsDead() {
-        skeleton.setIsDead();
-    }
+  @Override
+  public Point getLocation() {
+    return skeleton.getLocation();
+  }
 
-    @Override
-    public void interactWith(Creature otherCreature) throws IllegalArgumentException {
-        CreatureType type = otherCreature.getCreatureType();
-        if (type == SnakeHead || type == SimpleSnakeBodyPart || type == TailDiscardBodyPart) {
-            skeleton.setIsDead();
-            return;
-        }
-        throw new IllegalArgumentException(String.format("DA FAK MADAFAKA?!" +
-                        " I DON'T KNOW HOW TO SPEAK TO WHAMEN!" +
-                        "(This (%s) doesn't know hot to interact with (%s))",
-                this.toString(),
-                otherCreature.toString()));
-    }
+  @Override
+  public Direction getCurrentDirection() {
+    return skeleton.getCurrentDirection();
+  }
 
-    @Override
-    public void cleanUp() {
-        skeleton.cleanUp();
-    }
+  @Override
+  public CreatureType getCreatureType() {
+    return CREATURE_TYPE;
+  }
 
-    @Override
-    public boolean isHead() {
-        return skeleton.isHead();
-    }
+  @Override
+  public void setCurrentDirection(Direction newDirection) {
+    skeleton.setCurrentDirection(newDirection);
+  }
 
-    @Override
-    public Point getLocation() {
-        return skeleton.getLocation();
-    }
+  @Override
+  public Snake getSnake() {
+    return skeleton.getSnake();
+  }
 
-    @Override
-    public Direction getCurrentDirection() {
-        return skeleton.getCurrentDirection();
-    }
+  @Override
+  public SnakeBodyPart getNextBodyPart() {
+    return skeleton.getNextBodyPart();
+  }
 
-    @Override
-    public CreatureType getCreatureType() {
-        return CREATURE_TYPE;
-    }
+  @Override
+  public SnakeBodyPart getPrecedingBodyPart() {
+    return skeleton.getPrecedingBodyPart();
+  }
 
-    @Override
-    public void setCurrentDirection(Direction newDirection) {
-        skeleton.setCurrentDirection(newDirection);
-    }
+  @Override
+  public void attachNewBodyPart(SnakeBodyPart bodyPart) {
+    skeleton.attachNewBodyPart(bodyPart);
+  }
 
-    @Override
-    public Snake getSnake() {
-        return skeleton.getSnake();
-    }
+  @Override
+  public void attachToPrecedingBodyPart(SnakeBodyPart bodyPart) {
+    skeleton.attachToPrecedingBodyPart(bodyPart);
+  }
 
-    @Override
-    public SnakeBodyPart getNextBodyPart() {
-        return skeleton.getNextBodyPart();
-    }
+  @Override
+  public void deattachNextBodyPart() {
+    skeleton.deattachNextBodyPart();
+  }
 
-    @Override
-    public SnakeBodyPart getPrecedingBodyPart() {
-        return skeleton.getPrecedingBodyPart();
-    }
+  @Override
+  public SnakeBodyPartSkeleton getSkeleton() {
+    return skeleton;
+  }
 
-    @Override
-    public void attachNewBodyPart(SnakeBodyPart bodyPart) {
-        skeleton.attachNewBodyPart(bodyPart);
-    }
+  @Override
+  public Direction getPreviousDirection() {
+    return skeleton.getPreviousDirection();
+  }
 
-    @Override
-    public void attachToPrecedingBodyPart(SnakeBodyPart bodyPart) {
-        skeleton.attachToPrecedingBodyPart(bodyPart);
-    }
-
-    @Override
-    public void deattachNextBodyPart() {
-        skeleton.deattachNextBodyPart();
-    }
-
-    @Override
-    public SnakeBodyPartSkeleton getSkeleton() {
-        return skeleton;
-    }
-
-    @Override
-    public Direction getPreviousDirection() {
-        return skeleton.getPreviousDirection();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s at (%d, %d) and with %s",
-                CREATURE_TYPE.toString(),
-                skeleton.getLocation().getX(),
-                skeleton.getLocation().getY(),
-                skeleton.getCurrentDirection().toString());
-    }
+  @Override
+  public String toString() {
+    return String.format("%s at (%d, %d) and with %s",
+        CREATURE_TYPE.toString(),
+        skeleton.getLocation().getX(),
+        skeleton.getLocation().getY(),
+        skeleton.getCurrentDirection().toString());
+  }
 }

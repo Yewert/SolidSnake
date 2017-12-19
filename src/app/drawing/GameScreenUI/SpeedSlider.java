@@ -14,7 +14,7 @@ public class SpeedSlider extends MenuObject {
 
   private Slider slider;
 
-  public SpeedSlider(double min, double max, double value, String name){
+  public SpeedSlider(double min, double max, double value, String name) {
     slider = new Slider(min, max, value);
 
     VBox root = new VBox();
