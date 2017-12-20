@@ -6,8 +6,11 @@ import app.menus.mainMenu.skinMenuBox.SkinMenuBox;
 import app.menus.menu.Menu;
 import app.menus.menu.MenuBox;
 import app.menus.menu.MenuObject;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
@@ -22,7 +25,9 @@ public class MainMenu extends Menu {
   private StackPane startPane;
   private MainMenuInfoText infoText;
   public final BiConsumer<Integer, Integer> tableUpdater;
+  public final Consumer<List<Entry<String, Integer>>> scoreLoader;
   public final Supplier<Boolean> isTournamentGameAvailable;
+  public final Supplier<String> getWinner;
 
   public MainMenu(Settings settings) {
     menuWithInfo = new VBox();
@@ -33,11 +38,13 @@ public class MainMenu extends Menu {
 
     MenuObject mainPlay = new MainMenuButton("PLAY");
     MenuObject mainTournament = new MainMenuButton("TOURNAMENT");
+    MenuObject mainScores = new MainMenuButton("SCORES");
     MenuObject mainOptions = new MainMenuButton("OPTIONS");
     MenuObject mainExit = new MainMenuButton("EXIT");
     MenuBox menuMain = new MainMenuBox(
         mainPlay,
         mainTournament,
+        mainScores,
         mainOptions,
         mainExit
     );
@@ -76,8 +83,17 @@ public class MainMenu extends Menu {
       infoText.setText("");
     });
 
+    ScoresMenu menuScores = new ScoresMenu();
+    menuScores.getButtonsMap().get("scoresBack").setOnMouseClicked(event -> {
+      if (event.getClickCount() < 2) {
+        fadeFromMenuToMenu(menuScores, menuMain);
+      }
+      infoText.setText("");
+    });
+
     tableUpdater = menuTournament.tableUpdater;
     isTournamentGameAvailable = menuTournament.isTournamentGameAvailable;
+    scoreLoader = menuScores.scoreLoader;
 
     mainPlay.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
@@ -90,6 +106,12 @@ public class MainMenu extends Menu {
         fadeFromMenuToMenu(menuMain, menuTournament);
       }
       infoText.setText("");
+    });
+    mainScores.setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
+      fadeFromMenuToMenu(menuMain, menuScores);
     });
     mainOptions.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
@@ -163,7 +185,9 @@ public class MainMenu extends Menu {
         "playDuo", playDuo,
         "playTrio", playTrio,
         "mainTournament", mainTournament,
-        "tournamentPlay", menuTournament.getButtonsMap().get("tournamentPlay"));
+        "tournamentPlay", menuTournament.getButtonsMap().get("tournamentPlay"),
+        "scoresLoad", menuScores.getButtonsMap().get("scoresLoad"));
+    getWinner = menuTournament.getWinner;
   }
 
   @Override

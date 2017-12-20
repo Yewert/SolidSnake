@@ -5,6 +5,7 @@ import app.menus.mainMenu.MainMenu;
 import app.menus.menu.Menu;
 import app.menus.menu.MenuObject;
 import app.menus.pauseMenu.PauseMenu;
+import java.io.IOException;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -38,6 +39,8 @@ public class App extends Application {
   private static boolean isPaused = false;
   private static Direction[] currDir;
   private static int snakeCount = 1;
+  private static StatsManager statsManager = new StatsManager("sers/stats.json");
+  private static Boolean statsSaved = false;
 
   // This values are initital and are being used to set default settings
   // (but might be used as properties later, I dunno)
@@ -359,16 +362,65 @@ public class App extends Application {
     MainMenu mainMenu = new MainMenu(settings);
     tableUpdater = mainMenu.tableUpdater;
     Supplier<Boolean> gameAvailabilityChecker = mainMenu.isTournamentGameAvailable;
+    Supplier<String> winnerSupplier = mainMenu.getWinner;
     Map<String, MenuObject> mb = mainMenu.getButtonsMap();
-    mb.get("playSolo").setOnMouseClicked(event -> playSnake(1, this::createGamePlay));
-    mb.get("playDuo").setOnMouseClicked(event -> playSnake(2, this::createGamePlay));
-    mb.get("playTrio").setOnMouseClicked(event -> playSnake(3, this::createGamePlay));
+    mb.get("playSolo").setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
+      playSnake(1, this::createGamePlay);
+    });
+    mb.get("playDuo").setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
+      playSnake(2, this::createGamePlay);
+    });
+    mb.get("playTrio").setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
+      playSnake(3, this::createGamePlay);
+    });
     mb.get("tournamentPlay").setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
       if (gameAvailabilityChecker.get()) {
+        statsSaved = false;
         playSnake(2, this::createTournamentGamePlay);
       } else {
+        String winner = winnerSupplier.get();
         Alert al = new Alert(AlertType.INFORMATION);
-        al.setContentText("Tournament has ended");
+        if (winner == null) {
+          al.setContentText("Tournament has ended with a tie");
+          al.showAndWait();
+        } else {
+          try {
+            if (!statsSaved) {
+              statsManager.updateStats(winner);
+              statsSaved = true;
+            }
+          } catch (IOException e) {
+            Alert fileAlert = new Alert(AlertType.ERROR);
+            fileAlert.setContentText(e.getMessage());
+            fileAlert.showAndWait();
+            return;
+          }
+          al.setContentText(String.format("Tournament has ended. %s won", winner));
+          al.showAndWait();
+        }
+      }
+    });
+    mb.get("scoresLoad").setOnMouseClicked(event -> {
+      if (event.getClickCount() > 1) {
+        return;
+      }
+      try {
+        mainMenu.scoreLoader.accept(statsManager.getTop(10));
+      } catch (IOException e) {
+        Alert al = new Alert(AlertType.ERROR);
+        al.setContentText(e.getMessage());
         al.showAndWait();
       }
     });

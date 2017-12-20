@@ -30,6 +30,8 @@ public class TournamentMenu extends MenuBox {
   private MatchPair currentPair;
   private GridPane tournamentGrid;
   public final Supplier<Boolean> isTournamentGameAvailable;
+  public final Supplier<String> getWinner;
+  private Double[] scores;
 
   public TournamentMenu() {
     tableUpdater = this::updateScores;
@@ -38,6 +40,7 @@ public class TournamentMenu extends MenuBox {
     buttons = Map.of("tournamentBack", backButton, "tournamentPlay", playButton);
     initTournamentCreation();
     isTournamentGameAvailable = this::isGameAvailable;
+    getWinner = this::determineWinner;
   }
 
   private void initTournamentCreation() {
@@ -101,12 +104,17 @@ public class TournamentMenu extends MenuBox {
     initTournament();
   }
 
-  public void switchToCreation() {
+  private void switchToCreation() {
+    labels.clear();
     getChildren().clear();
     initTournamentCreation();
   }
 
   private void initTournament() {
+    scores = new Double[labels.size()];
+    for (int i = 0; i < scores.length; i++) {
+      scores[i] = 0.0;
+    }
     VBox root = new VBox();
     tournamentGrid = new GridPane();
     ColumnConstraints colConstr0 = new ColumnConstraints(100, 100, 100);
@@ -143,10 +151,9 @@ public class TournamentMenu extends MenuBox {
     getChildren().add(root);
     scheduler = new MatchScheduler(labels.size());
     currentPair = scheduler.getNextPair();
-    labels.clear();
   }
 
-  public static void addTextLimiter(final TextField tf, final int maxLength) {
+  private static void addTextLimiter(final TextField tf, final int maxLength) {
     tf.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(final ObservableValue<? extends String> ov, final String oldValue,
@@ -159,8 +166,10 @@ public class TournamentMenu extends MenuBox {
     });
   }
 
-  public void updateScores(Integer score1, Integer score2) {
+  private void updateScores(Integer score1, Integer score2) {
     currentPair.registerScores(score1, score2);
+    scores[currentPair.getPlayerOne() - 1] += currentPair.getFirstPlayerPoints();
+    scores[currentPair.getPlayerTwo() - 1] += currentPair.getSecondPlayerPoints();
     Label points1 = new Label(currentPair.getFirstPlayerPoints().toString());
     points1.setTextFill(Color.WHITE);
     tournamentGrid.add(points1, currentPair.getPlayerTwo(),
@@ -172,12 +181,27 @@ public class TournamentMenu extends MenuBox {
     currentPair = scheduler.getNextPair();
   }
 
+  private String determineWinner() {
+    String winner = null;
+    Double currentBest = -1.0;
+    System.out.println(scores);
+    for (int i = 0; i < scores.length; i++) {
+      if (scores[i] > currentBest) {
+        currentBest = scores[i];
+        winner = labels.get(i).getText();
+      } else if (scores[i].equals(currentBest)) {
+        winner = null;
+      }
+    }
+    return winner;
+  }
+
   @Override
   public Map<String, MenuObject> getButtonsMap() {
     return buttons;
   }
 
-  public boolean isGameAvailable() {
+  private boolean isGameAvailable() {
     return currentPair != null;
   }
 }
