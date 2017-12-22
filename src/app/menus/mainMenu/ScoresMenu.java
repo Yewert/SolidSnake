@@ -25,7 +25,7 @@ public class ScoresMenu extends MenuBox {
 
   public ScoresMenu() {
     VBox vb = new VBox();
-    ColumnConstraints playersColumn = new ColumnConstraints(200, 200 , 200);
+    ColumnConstraints playersColumn = new ColumnConstraints(200, 200, 200);
     scoresGrid = new GridPane();
     scoresGrid.getColumnConstraints().add(playersColumn);
     scoresGrid.setGridLinesVisible(true);
@@ -33,7 +33,7 @@ public class ScoresMenu extends MenuBox {
     HBox buttonRow = new HBox();
     buttonRow.setAlignment(Pos.BOTTOM_CENTER);
     MainMenuButton backButton = new MainMenuButton("BACK");
-    MainMenuButton loadStatsButton = new MainMenuButton("LOAD");
+    MainMenuButton loadStatsButton = new MainMenuButton("RELOAD");
     buttons = Map.of("scoresBack", backButton, "scoresLoad", loadStatsButton);
     buttonRow.getChildren().addAll(backButton, loadStatsButton);
     scoreLoader = this::LoadScores;
@@ -56,10 +56,10 @@ public class ScoresMenu extends MenuBox {
       }
       Label newPlayer = new Label(scores.get(i).getKey());
       newPlayer.setTextFill(Color.WHITE);
-      newPlayer.setFont(new Font(22));
+      newPlayer.setFont(new Font(20));
       Label score = new Label(scores.get(i).getValue().toString());
       score.setTextFill(Color.WHITE);
-      score.setFont(new Font(22));
+      score.setFont(new Font(20));
       labels.add(newPlayer);
       labels.add(score);
       scoresGrid.add(newPlayer, 0, i);

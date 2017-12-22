@@ -25,6 +25,13 @@ public class MatchPair {
     }
   }
 
+  public MatchPair(int playerOne, int playerTwo, Double pts1, Double pts2) {
+    this.playerOne = playerOne;
+    this.playerTwo = playerTwo;
+    this.pts1 = pts1;
+    this.pts2 = pts2;
+  }
+
   public Double getFirstPlayerPoints() {
     return pts1;
   }

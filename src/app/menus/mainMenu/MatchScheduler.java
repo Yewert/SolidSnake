@@ -1,14 +1,45 @@
 package app.menus.mainMenu;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import java.util.Map;
 
 public class MatchScheduler {
 
   private static Map<Integer, Integer> numberOfMatches = Map.of(2, 1, 3, 3, 4, 6, 5, 10);
   private final int numberOfPlayers;
-  private final MatchPair[] pairs;
+
+  public MatchScheduler(int numberOfPlayers, MatchPair[] pairs, int counter) {
+    this.numberOfPlayers = numberOfPlayers;
+    this.pairs = pairs;
+    this.counter = counter;
+  }
+
+  public int getNumberOfPlayers() {
+    return numberOfPlayers;
+  }
+
+  public MatchPair[] getPairs() {
+    return pairs;
+  }
+
+  public int getCounter() {
+    return counter;
+  }
+
+  public void setPairs(MatchPair[] pairs) {
+    this.pairs = pairs;
+  }
+
+  @JSONField
+  private MatchPair[] pairs;
+
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
+
   //NICE FUCKING IENUMERABLE JAVA
-  private int counter = 0;
+  @JSONField
+  private int counter = -1;
 
   public MatchScheduler(int numberOfPlayers) {
     this.numberOfPlayers = numberOfPlayers;
@@ -22,13 +53,16 @@ public class MatchScheduler {
     }
   }
 
-  public MatchPair getNextPair() {
+  @JSONField(serialize = false)
+  public void setUpNextPair() {
+    counter++;
+  }
+
+  @JSONField(serialize = false)
+  public MatchPair getCurrentPair() {
     if (counter >= pairs.length) {
       return null;
     }
-    MatchPair pair = pairs[counter];
-    counter++;
-    return pair;
+    return pairs[counter];
   }
-
 }

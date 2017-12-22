@@ -28,6 +28,7 @@ public class MainMenu extends Menu {
   public final Consumer<List<Entry<String, Integer>>> scoreLoader;
   public final Supplier<Boolean> isTournamentGameAvailable;
   public final Supplier<String> getWinner;
+  public final Supplier<Void> deleteTournamentSave;
 
   public MainMenu(Settings settings) {
     menuWithInfo = new VBox();
@@ -78,6 +79,8 @@ public class MainMenu extends Menu {
     TournamentMenu menuTournament = new TournamentMenu();
     menuTournament.getButtonsMap().get("tournamentBack").setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
+        //NICE DELEGATE FOR void () METHOD JAVA
+        menuTournament.tournamentSaver.get();
         fadeFromMenuToMenu(menuTournament, menuMain);
       }
       infoText.setText("");
@@ -94,6 +97,7 @@ public class MainMenu extends Menu {
     tableUpdater = menuTournament.tableUpdater;
     isTournamentGameAvailable = menuTournament.isTournamentGameAvailable;
     scoreLoader = menuScores.scoreLoader;
+    deleteTournamentSave = menuTournament.tournamentDeleter;
 
     mainPlay.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {

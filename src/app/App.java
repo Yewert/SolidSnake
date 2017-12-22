@@ -20,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -382,7 +383,7 @@ public class App extends Application {
       }
       playSnake(3, this::createGamePlay);
     });
-    mb.get("tournamentPlay").setOnMouseClicked(event -> {
+    mb.get("tournamentPlay").setOnMouseClicked((MouseEvent event) -> {
       if (event.getClickCount() > 1) {
         return;
       }
@@ -390,6 +391,7 @@ public class App extends Application {
         statsSaved = false;
         playSnake(2, this::createTournamentGamePlay);
       } else {
+        mainMenu.deleteTournamentSave.get();
         String winner = winnerSupplier.get();
         Alert al = new Alert(AlertType.INFORMATION);
         if (winner == null) {
