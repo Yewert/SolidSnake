@@ -12,8 +12,6 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -47,12 +45,12 @@ public class TournamentMenu extends MenuBox {
     tournament = tryLoadTournament();
     if (tournament == null) {
       initTournamentCreation();
-    } else{
+    } else {
       initTournament();
     }
     isTournamentGameAvailable = this::isGameAvailable;
     getWinner = this::determineWinner;
-    tournamentSaver = () ->{
+    tournamentSaver = () -> {
       trySaveTournament();
       return null;
     };
@@ -156,14 +154,10 @@ public class TournamentMenu extends MenuBox {
   }
 
   private static void addTextLimiter(final TextField tf, final int maxLength) {
-    tf.textProperty().addListener(new ChangeListener<String>() {
-      @Override
-      public void changed(final ObservableValue<? extends String> ov, final String oldValue,
-          final String newValue) {
-        if (tf.getText().length() > maxLength) {
-          String s = tf.getText().substring(0, maxLength);
-          tf.setText(s);
-        }
+    tf.textProperty().addListener((ov, oldValue, newValue) -> {
+      if (tf.getText().length() > maxLength) {
+        String s = tf.getText().substring(0, maxLength);
+        tf.setText(s);
       }
     });
   }
@@ -203,7 +197,7 @@ public class TournamentMenu extends MenuBox {
     return buttons;
   }
 
-  private Tournament tryLoadTournament(){
+  private Tournament tryLoadTournament() {
     try {
       return JSON.parseObject(
           String.join(
@@ -216,14 +210,14 @@ public class TournamentMenu extends MenuBox {
     }
   }
 
-  private void deleteTournament(){
+  private void deleteTournament() {
     File file = new File("sers/tournament.json");
     if (file.exists()) {
       file.delete();
     }
   }
 
-  private void trySaveTournament(){
+  private void trySaveTournament() {
     try {
       if (tournament != null) {
         File file = new File("sers/tournament.json");
@@ -235,7 +229,7 @@ public class TournamentMenu extends MenuBox {
         }
         Files.write(file.toPath(), JSON.toJSONBytes(tournament));
       }
-    } catch (IOException e){
+    } catch (IOException e) {
       Alert al = new Alert(AlertType.ERROR);
       al.setContentText(e.getMessage());
       al.showAndWait();

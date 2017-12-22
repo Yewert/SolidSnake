@@ -3,10 +3,8 @@ package app;
 import app.drawing.GameScreen;
 import app.menus.mainMenu.MainMenu;
 import app.menus.menu.Menu;
-import app.menus.menu.MenuObject;
 import app.menus.pauseMenu.PauseMenu;
 import java.io.IOException;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import javafx.animation.AnimationTimer;
@@ -40,17 +38,17 @@ public class App extends Application {
   private static boolean isPaused = false;
   private static Direction[] currDir;
   private static int snakeCount = 1;
-  private static StatsManager statsManager = new StatsManager("sers/stats.json");
+  private static final StatsManager statsManager = new StatsManager("sers/stats.json");
   private static Boolean statsSaved = false;
 
-  // This values are initital and are being used to set default settings
+  // This values are initial and are being used to set default settings
   // (but might be used as properties later, I dunno)
   private static int cellSize = 30;
   private static int speed = 150;
 
   private static BiConsumer<Integer, Integer> tableUpdater;
+  private static Supplier<Void> tournamentSaver;
   private static Scene menuSceneRoot;
-  private static Parent menuRoot;
 
   private static Stage theStage;
   private static AnimationTimer gameLoop;
@@ -67,7 +65,6 @@ public class App extends Application {
     primaryStage.setTitle("Snake Reborn");
     primaryStage.setResizable(false);
     primaryStage.setFullScreen(false);
-    primaryStage.setOnCloseRequest(e -> System.exit(0));
 
     settings = new Settings(
         cellSize,
@@ -86,8 +83,12 @@ public class App extends Application {
             snakeCount
         )
     );
-    menuRoot = createMainMenu();
+    Parent menuRoot = createMainMenu();
     menuSceneRoot = new Scene(menuRoot, Color.BLACK);
+    primaryStage.setOnCloseRequest(e -> {
+      tournamentSaver.get();
+      System.exit(0);
+    });
     theStage = primaryStage;
     theStage.setScene(menuSceneRoot);
     theStage.show();
@@ -110,27 +111,13 @@ public class App extends Application {
     ));
 
     Menu pauseMenu = new PauseMenu();
-    Map<String, MenuObject> bm = pauseMenu.getButtonsMap();
-    bm.get("pauseResume").setOnMouseClicked(event -> {
+    pauseMenu.getButtonsMap().get("pauseResume").setOnMouseClicked(event -> {
       isPaused = false;
       root.getChildren().remove(pauseMenu);
       pauseMenu.reload();
     });
-    bm.get("pauseRestart").setOnMouseClicked(event -> {
-      isPaused = false;
-      root.getChildren().remove(pauseMenu);
-      pauseMenu.reload();
-      reset(snakeCount);
-    });
-    bm.get("quitYes").setOnMouseClicked(event -> {
-      isPaused = false;
-      gameLoop.stop();
-      FadeTransition fade = new FadeTransition(Duration.millis(300), root);
-      fade.setFromValue(1);
-      fade.setToValue(0);
-      fade.setOnFinished(e -> theStage.setScene(menuSceneRoot));
-      fade.play();
-    });
+    initRestart(root, pauseMenu);
+    initQuitYes(root, pauseMenu);
 
     GameScreen gameScreen = new GameScreen(settings);
     root.getChildren().add(gameScreen);
@@ -179,17 +166,16 @@ public class App extends Application {
           }
           break;
         case ESCAPE:
-          if (isPaused) {
-            isPaused = false;
-            root.getChildren().remove(pauseMenu);
-            pauseMenu.reload();
-          } else {
-            isPaused = true;
-            root.getChildren().add(pauseMenu);
-          }
+          bindEscapeToPauseMenu(root, pauseMenu);
       }
     });
 
+    createAnimationTimer(gameScreen);
+
+    return root;
+  }
+
+  private void createAnimationTimer(GameScreen gameScreen) {
     gameLoop = new AnimationTimer() {
 
       private long prevTime = 0;
@@ -210,8 +196,17 @@ public class App extends Application {
         gameScreen.update(frame);
       }
     };
+  }
 
-    return root;
+  private void bindEscapeToPauseMenu(StackPane root, Menu pauseMenu) {
+    if (isPaused) {
+      isPaused = false;
+      root.getChildren().remove(pauseMenu);
+      pauseMenu.reload();
+    } else {
+      isPaused = true;
+      root.getChildren().add(pauseMenu);
+    }
   }
 
   private Parent createTournamentGamePlay() {
@@ -222,27 +217,13 @@ public class App extends Application {
     ));
 
     Menu pauseMenu = new PauseMenu();
-    Map<String, MenuObject> bm = pauseMenu.getButtonsMap();
-    bm.get("pauseResume").setOnMouseClicked(event -> {
+    pauseMenu.getButtonsMap().get("pauseResume").setOnMouseClicked(event -> {
       isPaused = false;
       root.getChildren().remove(pauseMenu);
       pauseMenu.reload();
     });
-    bm.get("pauseRestart").setOnMouseClicked(event -> {
-      isPaused = false;
-      root.getChildren().remove(pauseMenu);
-      pauseMenu.reload();
-      reset(snakeCount);
-    });
-    bm.get("quitYes").setOnMouseClicked(event -> {
-      isPaused = false;
-      gameLoop.stop();
-      FadeTransition fade = new FadeTransition(Duration.millis(300), root);
-      fade.setFromValue(1);
-      fade.setToValue(0);
-      fade.setOnFinished(e -> theStage.setScene(menuSceneRoot));
-      fade.play();
-    });
+    initRestart(root, pauseMenu);
+    initQuitYes(root, pauseMenu);
 
     GameScreen gameScreen = new GameScreen(settings);
     root.getChildren().add(gameScreen);
@@ -299,39 +280,34 @@ public class App extends Application {
           }
           break;
         case ESCAPE:
-          if (isPaused) {
-            isPaused = false;
-            root.getChildren().remove(pauseMenu);
-            pauseMenu.reload();
-          } else {
-            isPaused = true;
-            root.getChildren().add(pauseMenu);
-          }
+          bindEscapeToPauseMenu(root, pauseMenu);
       }
     });
 
-    gameLoop = new AnimationTimer() {
-
-      private long prevTime = 0;
-
-      @Override
-      public void handle(long now) {
-        if (!isGameOver && !isPaused) {
-          if ((now - prevTime) >= settings.getSpeed() * 1000000) {
-            prevTime = now;
-            Direction[] directions = new Direction[snakeCount];
-            System.arraycopy(currDir, 0, directions, 0, snakeCount);
-            frame = game.makeTurn(directions);
-            if (frame == null) {
-              isGameOver = true;
-            }
-          }
-        }
-        gameScreen.update(frame);
-      }
-    };
+    createAnimationTimer(gameScreen);
 
     return root;
+  }
+
+  private void initQuitYes(StackPane root, Menu pauseMenu) {
+    pauseMenu.getButtonsMap().get("quitYes").setOnMouseClicked(event -> {
+      isPaused = false;
+      gameLoop.stop();
+      FadeTransition fade = new FadeTransition(Duration.millis(300), root);
+      fade.setFromValue(1);
+      fade.setToValue(0);
+      fade.setOnFinished(e -> theStage.setScene(menuSceneRoot));
+      fade.play();
+    });
+  }
+
+  private void initRestart(StackPane root, Menu pauseMenu) {
+    pauseMenu.getButtonsMap().get("pauseRestart").setOnMouseClicked(event -> {
+      isPaused = false;
+      root.getChildren().remove(pauseMenu);
+      pauseMenu.reload();
+      reset(snakeCount);
+    });
   }
 
   private Parent createMainMenu() {
@@ -364,26 +340,26 @@ public class App extends Application {
     tableUpdater = mainMenu.tableUpdater;
     Supplier<Boolean> gameAvailabilityChecker = mainMenu.isTournamentGameAvailable;
     Supplier<String> winnerSupplier = mainMenu.getWinner;
-    Map<String, MenuObject> mb = mainMenu.getButtonsMap();
-    mb.get("playSolo").setOnMouseClicked(event -> {
+    tournamentSaver = mainMenu.tournamentSaver;
+    mainMenu.getButtonsMap().get("playSolo").setOnMouseClicked(event -> {
       if (event.getClickCount() > 1) {
         return;
       }
       playSnake(1, this::createGamePlay);
     });
-    mb.get("playDuo").setOnMouseClicked(event -> {
+    mainMenu.getButtonsMap().get("playDuo").setOnMouseClicked(event -> {
       if (event.getClickCount() > 1) {
         return;
       }
       playSnake(2, this::createGamePlay);
     });
-    mb.get("playTrio").setOnMouseClicked(event -> {
+    mainMenu.getButtonsMap().get("playTrio").setOnMouseClicked(event -> {
       if (event.getClickCount() > 1) {
         return;
       }
       playSnake(3, this::createGamePlay);
     });
-    mb.get("tournamentPlay").setOnMouseClicked((MouseEvent event) -> {
+    mainMenu.getButtonsMap().get("tournamentPlay").setOnMouseClicked((MouseEvent event) -> {
       if (event.getClickCount() > 1) {
         return;
       }
@@ -414,7 +390,7 @@ public class App extends Application {
         }
       }
     });
-    mb.get("scoresLoad").setOnMouseClicked(event -> {
+    mainMenu.getButtonsMap().get("scoresLoad").setOnMouseClicked(event -> {
       if (event.getClickCount() > 1) {
         return;
       }

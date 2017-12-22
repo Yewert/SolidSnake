@@ -42,21 +42,24 @@ public class SnakeHead implements SnakeBodyPart {
     if (newBodyParts.size() > 0) {
       CreatureType toAdd = newBodyParts.remove();
       SnakeBodyPart tail = getSnake().getTail();
-      if (toAdd == SimpleSnakeBodyPart) {
-        skeleton.attachNewBodyPart(new SimpleSnakeBodyPart(
-            Direction.None,
-            tail.getLocation(),
-            skeleton.getSnake())
-        );
-      } else if (toAdd == TailDiscardBodyPart) {
-        skeleton.attachNewBodyPart(new TailDiscardBodyPart(
-            Direction.None,
-            tail.getLocation(),
-            skeleton.getSnake())
-        );
-      } else {
-        throw new UnsupportedOperationException(String.format("What a fokin Frankenstine" +
-            " creature (you can't append %s to the snake", toAdd));
+      switch (toAdd) {
+        case SimpleSnakeBodyPart:
+          skeleton.attachNewBodyPart(new SimpleSnakeBodyPart(
+              Direction.None,
+              tail.getLocation(),
+              skeleton.getSnake())
+          );
+          break;
+        case TailDiscardBodyPart:
+          skeleton.attachNewBodyPart(new TailDiscardBodyPart(
+              Direction.None,
+              tail.getLocation(),
+              skeleton.getSnake())
+          );
+          break;
+        default:
+          throw new UnsupportedOperationException(String.format("What a fokin Frankenstine" +
+              " creature (you can't append %s to the snake", toAdd));
       }
     }
     skeleton.makeMove(field, currentTurn);

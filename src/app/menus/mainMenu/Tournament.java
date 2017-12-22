@@ -5,6 +5,35 @@ import java.util.stream.DoubleStream;
 
 public class Tournament {
 
+  @JSONField
+  private Double[][] table;
+  @JSONField
+  private MatchScheduler scheduler;
+  @JSONField
+  private String[] playerNames;
+  @JSONField
+  private Double[] scores;
+
+  public Tournament(Double[][] table, MatchScheduler scheduler, String[] playerNames,
+      Double[] scores) {
+    this.table = table;
+    this.scheduler = scheduler;
+    this.playerNames = playerNames;
+    this.scores = scores;
+  }
+
+  public Tournament(String[] playerNames) {
+    scheduler = new MatchScheduler(playerNames.length);
+    this.playerNames = playerNames;
+    scores = DoubleStream
+        .generate(() -> 0.0)
+        .limit(playerNames.length)
+        .boxed()
+        .toArray(Double[]::new);
+    table = new Double[playerNames.length][playerNames.length];
+    setUpNextPair();
+  }
+
   public MatchScheduler getScheduler() {
     return scheduler;
   }
@@ -22,54 +51,8 @@ public class Tournament {
     return scores;
   }
 
-  public void setTable(Double[][] table) {
-    this.table = table;
-  }
-
-  public void setScheduler(MatchScheduler scheduler) {
-    this.scheduler = scheduler;
-  }
-
-  public void setPlayerNames(String[] playerNames) {
-    this.playerNames = playerNames;
-  }
-
-  public void setScores(Double[] scores) {
-    this.scores = scores;
-  }
-
   public Double[][] getTable() {
-
     return table;
-  }
-
-  @JSONField
-  private Double[][] table;
-  @JSONField
-  private MatchScheduler scheduler;
-  @JSONField
-  private String[] playerNames;
-  @JSONField
-  private Double[] scores;
-
-  public Tournament(String[] playerNames) {
-    scheduler = new MatchScheduler(playerNames.length);
-    this.playerNames = playerNames;
-    scores = DoubleStream
-        .generate(() -> 0.0)
-        .limit(playerNames.length)
-        .boxed()
-        .toArray(Double[]::new);
-    table = new Double[playerNames.length][playerNames.length];
-    setUpNextPair();
-  }
-
-  public Tournament(Double[][] table, MatchScheduler scheduler, String[] playerNames,
-      Double[] scores) {
-    this.table = table;
-    this.scheduler = scheduler;
-    this.playerNames = playerNames;
-    this.scores = scores;
   }
 
   @JSONField(serialize = false)
@@ -84,12 +67,16 @@ public class Tournament {
 
   public void registerCurrentPairScores(Integer playerOneScore, Integer playerTwoScore) {
     scheduler.getCurrentPair().registerScores(playerOneScore, playerTwoScore);
-    table[scheduler.getCurrentPair().getPlayerOne() - 1][scheduler.getCurrentPair().getPlayerTwo() - 1] =
+    table[scheduler.getCurrentPair().getPlayerOne() - 1][scheduler.getCurrentPair().getPlayerTwo()
+        - 1] =
         scheduler.getCurrentPair().getSecondPlayerPoints();
-    table[scheduler.getCurrentPair().getPlayerTwo() - 1][scheduler.getCurrentPair().getPlayerOne() - 1] =
+    table[scheduler.getCurrentPair().getPlayerTwo() - 1][scheduler.getCurrentPair().getPlayerOne()
+        - 1] =
         scheduler.getCurrentPair().getFirstPlayerPoints();
-    scores[scheduler.getCurrentPair().getPlayerOne() - 1] += scheduler.getCurrentPair().getFirstPlayerPoints();
-    scores[scheduler.getCurrentPair().getPlayerTwo() - 1] += scheduler.getCurrentPair().getSecondPlayerPoints();
+    scores[scheduler.getCurrentPair().getPlayerOne() - 1] += scheduler.getCurrentPair()
+        .getFirstPlayerPoints();
+    scores[scheduler.getCurrentPair().getPlayerTwo() - 1] += scheduler.getCurrentPair()
+        .getSecondPlayerPoints();
   }
 
   @JSONField(serialize = false)
@@ -110,8 +97,10 @@ public class Tournament {
   @JSONField(serialize = false)
   public String[][] getRepresentation() {
     String[][] result = new String[1 + playerNames.length + 1][1 + playerNames.length];
-    int columnIndexOfCurrentPair = scheduler.getCurrentPair() == null ? -1 : scheduler.getCurrentPair().getPlayerTwo();
-    int rowIndexOfCurrentPair = scheduler.getCurrentPair() == null ? -1 : scheduler.getCurrentPair().getPlayerOne();
+    int columnIndexOfCurrentPair =
+        scheduler.getCurrentPair() == null ? -1 : scheduler.getCurrentPair().getPlayerTwo();
+    int rowIndexOfCurrentPair =
+        scheduler.getCurrentPair() == null ? -1 : scheduler.getCurrentPair().getPlayerOne();
     result[0][0] = "";
     result[result.length - 1][0] = "PTS";
     for (int i = 0; i < result.length; i++) {

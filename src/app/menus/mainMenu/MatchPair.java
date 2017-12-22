@@ -12,6 +12,13 @@ public class MatchPair {
     this.playerTwo = playerTwo;
   }
 
+  public MatchPair(int playerOne, int playerTwo, Double pts1, Double pts2) {
+    this.playerOne = playerOne;
+    this.playerTwo = playerTwo;
+    this.pts1 = pts1;
+    this.pts2 = pts2;
+  }
+
   public void registerScores(int score1, int score2) {
     if (score1 == score2) {
       pts1 = 0.5;
@@ -23,13 +30,6 @@ public class MatchPair {
       pts1 = 0.0;
       pts2 = 1.0;
     }
-  }
-
-  public MatchPair(int playerOne, int playerTwo, Double pts1, Double pts2) {
-    this.playerOne = playerOne;
-    this.playerTwo = playerTwo;
-    this.pts1 = pts1;
-    this.pts2 = pts2;
   }
 
   public Double getFirstPlayerPoints() {

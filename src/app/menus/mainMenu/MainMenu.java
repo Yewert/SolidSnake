@@ -20,22 +20,21 @@ import javafx.util.Duration;
 
 public class MainMenu extends Menu {
 
-  private Map<String, MenuObject> buttons;
-  private VBox menuWithInfo;
+  private final Map<String, MenuObject> buttons;
+  private final VBox menuWithInfo;
   private StackPane startPane;
-  private MainMenuInfoText infoText;
   public final BiConsumer<Integer, Integer> tableUpdater;
   public final Consumer<List<Entry<String, Integer>>> scoreLoader;
   public final Supplier<Boolean> isTournamentGameAvailable;
   public final Supplier<String> getWinner;
   public final Supplier<Void> deleteTournamentSave;
+  public final Supplier<Void> tournamentSaver;
 
   public MainMenu(Settings settings) {
     menuWithInfo = new VBox();
     menuWithInfo.setAlignment(Pos.BOTTOM_CENTER);
 
     startPane = new StackPane();
-    infoText = new MainMenuInfoText("");
 
     MenuObject mainPlay = new MainMenuButton("PLAY");
     MenuObject mainTournament = new MainMenuButton("TOURNAMENT");
@@ -77,39 +76,36 @@ public class MainMenu extends Menu {
     );
 
     TournamentMenu menuTournament = new TournamentMenu();
+    tournamentSaver = menuTournament.tournamentSaver;
+    tableUpdater = menuTournament.tableUpdater;
+    isTournamentGameAvailable = menuTournament.isTournamentGameAvailable;
+    deleteTournamentSave = menuTournament.tournamentDeleter;
+
     menuTournament.getButtonsMap().get("tournamentBack").setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
-        //NICE DELEGATE FOR void () METHOD JAVA
-        menuTournament.tournamentSaver.get();
+        tournamentSaver.get();
         fadeFromMenuToMenu(menuTournament, menuMain);
       }
-      infoText.setText("");
     });
 
     ScoresMenu menuScores = new ScoresMenu();
+    scoreLoader = menuScores.scoreLoader;
+
     menuScores.getButtonsMap().get("scoresBack").setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuScores, menuMain);
       }
-      infoText.setText("");
     });
-
-    tableUpdater = menuTournament.tableUpdater;
-    isTournamentGameAvailable = menuTournament.isTournamentGameAvailable;
-    scoreLoader = menuScores.scoreLoader;
-    deleteTournamentSave = menuTournament.tournamentDeleter;
 
     mainPlay.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuMain, menuPlay);
       }
-      infoText.setText("");
     });
     mainTournament.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuMain, menuTournament);
       }
-      infoText.setText("");
     });
     mainScores.setOnMouseClicked(event -> {
       if (event.getClickCount() > 1) {
@@ -121,7 +117,6 @@ public class MainMenu extends Menu {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuMain, menuOptions);
       }
-      infoText.setText("");
     });
     mainExit.setOnMouseClicked(event -> System.exit(0));
 
@@ -146,13 +141,11 @@ public class MainMenu extends Menu {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuOptions, menuSkins);
       }
-      infoText.setText("");
     });
     optionsBack.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuOptions, menuMain);
       }
-      infoText.setText("");
     });
 
     Map<String, MenuObject> skinButtons = menuSkins.getButtonsMap();
@@ -160,20 +153,17 @@ public class MainMenu extends Menu {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuSkins, menuOptions);
       }
-      infoText.setText("");
     });
     skinButtons.get("skinDecline").setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuSkins, menuOptions);
       }
-      infoText.setText("");
     });
 
     playBack.setOnMouseClicked(event -> {
       if (event.getClickCount() < 2) {
         fadeFromMenuToMenu(menuPlay, menuMain);
       }
-      infoText.setText("");
     });
 
     initMenu(menuMain);
@@ -182,7 +172,7 @@ public class MainMenu extends Menu {
     initMenu(menuPlay);
 
     startPane.getChildren().add(menuMain);
-    menuWithInfo.getChildren().addAll(startPane, infoText);
+    menuWithInfo.getChildren().add(startPane);
     getChildren().add(menuWithInfo);
 
     buttons = Map.of("playSolo", playSolo,

@@ -22,11 +22,11 @@ public class Game {
   private Creature[][] field;
   private final Snake[] snakes;
   private int turnNumber = 0;
-  private int appleSpawnRate = 20;
-  private int appleDeathRate = 50;
-  private int mushroomSpawnRate = 40;
-  private int mushroomDeathRate = 30;
-  private boolean foodSpawnActivated = true;
+  private int appleSpawnRate;
+  private int appleDeathRate;
+  private int mushroomSpawnRate;
+  private int mushroomDeathRate;
+  private boolean foodSpawnActivated;
 
   public Game(GameSettings settings) throws IllegalArgumentException {
     foodSpawnActivated = settings.isFoodSpawnEnabled();
@@ -49,9 +49,6 @@ public class Game {
     mushroomDeathRate = settings.getMushroomDeathRate();
     CreatureType[][] initialField = settings.getInitialField();
     field = new Creature[initialField[0].length][initialField.length];
-    if (initialField == null) {
-      throw new IllegalArgumentException("You w0t m8? It's a bloody void! (Field was null)");
-    }
     int snakeNumber = 0;
     for (int j = 0; j < initialField.length; j++) {
       for (int i = 0; i < initialField[0].length; i++) {
