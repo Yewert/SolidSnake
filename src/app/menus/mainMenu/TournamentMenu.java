@@ -12,13 +12,18 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -140,15 +145,28 @@ public class TournamentMenu extends MenuBox {
 
   private void initTournament() {
     VBox root = new VBox();
+    root.setAlignment(Pos.TOP_CENTER);
     tournamentGrid = new GridPane();
-    tournamentGrid.setAlignment(Pos.TOP_LEFT);
+    tournamentGrid.setAlignment(Pos.TOP_CENTER);
+    for (int i = 0; i < tournament.getPlayerNames().length + 1; i++) {
+      tournamentGrid
+          .getRowConstraints()
+          .add(new RowConstraints(50, 50, 50));
+    }
+    tournamentGrid
+        .getColumnConstraints()
+        .add(new ColumnConstraints(150, 150, 150));
+    for (int i = 1; i < tournament.getPlayerNames().length + 2; i++) {
+      tournamentGrid
+          .getColumnConstraints()
+          .add(new ColumnConstraints(100, 100, 100));
+    }
     redrawGrid();
-    GridPane buttonRow = new GridPane();
-    buttonRow.add(playButton, 1, 0);
-    buttonRow.add(backButton, 0, 0);
+    HBox buttonRow = new HBox();
+    buttonRow.setAlignment(Pos.CENTER );
     MenuObject abortButton = new MainMenuButton("ABORT");
     abortButton.setOnMouseClicked(e -> switchToCreation());
-    buttonRow.add(abortButton, 2, 0);
+    buttonRow.getChildren().addAll(backButton, abortButton, playButton);
     root.getChildren().addAll(tournamentGrid, buttonRow);
     getChildren().add(root);
   }
@@ -176,8 +194,8 @@ public class TournamentMenu extends MenuBox {
         Label lbl;
         if (i == j && repr[i][j] == null) {
           Rectangle rectangle = new Rectangle();
-          rectangle.setWidth(50);
-          rectangle.setHeight(30);
+          rectangle.setWidth(100);
+          rectangle.setHeight(50);
           rectangle.setFill(Color.WHITE);
           lbl = new Label("", rectangle);
         } else if (Objects.equals(repr[i][j], "NXT")) {
@@ -187,6 +205,8 @@ public class TournamentMenu extends MenuBox {
           lbl = new Label(repr[i][j]);
           lbl.setTextFill(Color.WHITE);
         }
+        GridPane.setValignment(lbl, VPos.CENTER);
+        GridPane.setHalignment(lbl, HPos.CENTER);
         tournamentGrid.add(lbl, i, j);
       }
     }
