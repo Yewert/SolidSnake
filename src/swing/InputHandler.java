@@ -1,36 +1,33 @@
 package swing;
 
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class InputHandler implements KeyListener
-{
-    private boolean[] keys = new boolean[256];
+public class InputHandler implements KeyListener {
 
-    public InputHandler(Component c)
-    {
-        c.addKeyListener(this);
+  private boolean[] keys = new boolean[256];
+
+  public InputHandler(Component c) {
+    c.addKeyListener(this);
+  }
+
+  public boolean isKeyDown(int keyCode) {
+    return keyCode > 0 && keyCode < 256 && keys[keyCode];
+  }
+
+  public void keyPressed(KeyEvent e) {
+    if (e.getKeyCode() > 0 && e.getKeyCode() < 256) {
+      keys[e.getKeyCode()] = true;
     }
+  }
 
-    public boolean isKeyDown(int keyCode) {
-        return keyCode > 0 && keyCode < 256 && keys[keyCode];
+  public void keyReleased(KeyEvent e) {
+    if (e.getKeyCode() > 0 && e.getKeyCode() < 256) {
+      keys[e.getKeyCode()] = false;
     }
+  }
 
-    public void keyPressed(KeyEvent e)
-    {
-        if (e.getKeyCode() > 0 && e.getKeyCode() < 256)
-        {
-            keys[e.getKeyCode()] = true;
-        }
-    }
-
-    public void keyReleased(KeyEvent e)
-    {
-        if (e.getKeyCode() > 0 && e.getKeyCode() < 256)
-        {
-            keys[e.getKeyCode()] = false;
-        }
-    }
-
-    public void keyTyped(KeyEvent e){}
+  public void keyTyped(KeyEvent e) {
+  }
 }
